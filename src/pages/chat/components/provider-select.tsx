@@ -1,30 +1,30 @@
-import { useGetProviders } from "@/hooks/fetch/providers";
+import { useEffect, useMemo, useState } from "react"
+import { useSelectedModelStore } from "@/store"
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+import { useGetProviders } from "@/hooks/fetch/providers"
+
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import { CheckIcon } from "lucide-react";
-import { ChevronsUpDownIcon } from "lucide-react";
-import { useSelectedModelStore } from "@/store";
-import { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
 
 export function ProviderSelect() {
-  const { data: providers } = useGetProviders();
+  const { data: providers } = useGetProviders()
 
-  const setSelectedModel = useSelectedModelStore((s) => s.setSelectedModel);
-  const selectedModel = useSelectedModelStore((s) => s.selectedModel);
+  const setSelectedModel = useSelectedModelStore((s) => s.setSelectedModel)
+  const selectedModel = useSelectedModelStore((s) => s.selectedModel)
 
   // TODO: Refactor
   useEffect(() => {
@@ -32,22 +32,22 @@ export function ProviderSelect() {
       setSelectedModel({
         providerID: Object.keys(providers.default)[0],
         modelID: providers.default[Object.keys(providers.default)[0]],
-      });
+      })
     }
-  }, [providers]);
+  }, [providers])
 
   const modelList = useMemo(() => {
-    if (!providers?.providers) return [];
+    if (!providers?.providers) return []
     return providers.providers.flatMap((provider) =>
       Object.keys(provider.models).map((model) => ({
         providerID: provider.id,
         modelID: model,
         name: provider.models[model].name,
       }))
-    );
-  }, [providers]);
+    )
+  }, [providers])
 
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false)
 
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -82,8 +82,8 @@ export function ProviderSelect() {
                           (model) => model.modelID === currentValue
                         )?.providerID ?? "",
                       modelID: currentValue,
-                    });
-                    setPopoverOpen(false);
+                    })
+                    setPopoverOpen(false)
                   }}
                 >
                   <CheckIcon
@@ -102,5 +102,5 @@ export function ProviderSelect() {
         </Command>
       </PopoverContent>
     </Popover>
-  );
-};
+  )
+}

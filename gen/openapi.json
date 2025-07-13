@@ -199,10 +199,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "providerID",
-                  "modelID"
-                ]
+                "required": ["providerID", "modelID"]
               }
             }
           }
@@ -331,10 +328,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "providerID",
-                  "modelID"
-                ]
+                "required": ["providerID", "modelID"]
               }
             }
           }
@@ -420,12 +414,7 @@
                     }
                   }
                 },
-                "required": [
-                  "providerID",
-                  "modelID",
-                  "mode",
-                  "parts"
-                ]
+                "required": ["providerID", "modelID", "mode", "parts"]
               }
             }
           }
@@ -455,10 +444,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "providers",
-                    "default"
-                  ]
+                  "required": ["providers", "default"]
                 }
               }
             }
@@ -574,19 +560,13 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": [
-                        "raw",
-                        "patch"
-                      ]
+                      "enum": ["raw", "patch"]
                     },
                     "content": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "type",
-                    "content"
-                  ]
+                  "required": ["type", "content"]
                 }
               }
             }
@@ -657,12 +637,7 @@
                   },
                   "level": {
                     "type": "string",
-                    "enum": [
-                      "debug",
-                      "info",
-                      "error",
-                      "warn"
-                    ],
+                    "enum": ["debug", "info", "error", "warn"],
                     "description": "Log level"
                   },
                   "message": {
@@ -675,11 +650,7 @@
                     "description": "Additional metadata for the log entry"
                   }
                 },
-                "required": [
-                  "service",
-                  "level",
-                  "message"
-                ]
+                "required": ["service", "level", "message"]
               }
             }
           }
@@ -789,16 +760,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "serverID",
-              "path"
-            ]
+            "required": ["serverID", "path"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.permission.updated": {
         "type": "object",
@@ -811,10 +776,7 @@
             "$ref": "#/components/schemas/permission.info"
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "permission.info": {
         "type": "object",
@@ -839,18 +801,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "created"
-            ]
+            "required": ["created"]
           }
         },
-        "required": [
-          "id",
-          "sessionID",
-          "title",
-          "metadata",
-          "time"
-        ]
+        "required": ["id", "sessionID", "title", "metadata", "time"]
       },
       "Event.file.edited": {
         "type": "object",
@@ -866,15 +820,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "file"
-            ]
+            "required": ["file"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.installation.updated": {
         "type": "object",
@@ -890,15 +839,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "version"
-            ]
+            "required": ["version"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.message.updated": {
         "type": "object",
@@ -914,15 +858,10 @@
                 "$ref": "#/components/schemas/Message"
               }
             },
-            "required": [
-              "info"
-            ]
+            "required": ["info"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Message": {
         "oneOf": [
@@ -967,18 +906,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "created"
-            ]
+            "required": ["created"]
           }
         },
-        "required": [
-          "id",
-          "sessionID",
-          "role",
-          "parts",
-          "time"
-        ]
+        "required": ["id", "sessionID", "role", "parts", "time"]
       },
       "UserMessagePart": {
         "oneOf": [
@@ -1011,10 +942,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "type",
-          "text"
-        ]
+        "required": ["type", "text"]
       },
       "FilePart": {
         "type": "object",
@@ -1033,11 +961,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "type",
-          "mime",
-          "url"
-        ]
+        "required": ["type", "mime", "url"]
       },
       "AssistantMessage": {
         "type": "object",
@@ -1068,9 +992,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "created"
-            ]
+            "required": ["created"]
           },
           "error": {
             "oneOf": [
@@ -1119,10 +1041,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "cwd",
-              "root"
-            ]
+            "required": ["cwd", "root"]
           },
           "summary": {
             "type": "boolean"
@@ -1152,18 +1071,10 @@
                     "type": "number"
                   }
                 },
-                "required": [
-                  "read",
-                  "write"
-                ]
+                "required": ["read", "write"]
               }
             },
-            "required": [
-              "input",
-              "output",
-              "reasoning",
-              "cache"
-            ]
+            "required": ["input", "output", "reasoning", "cache"]
           }
         },
         "required": [
@@ -1222,12 +1133,7 @@
             "$ref": "#/components/schemas/ToolState"
           }
         },
-        "required": [
-          "type",
-          "id",
-          "tool",
-          "state"
-        ]
+        "required": ["type", "id", "tool", "state"]
       },
       "ToolState": {
         "oneOf": [
@@ -1262,9 +1168,7 @@
             "const": "pending"
           }
         },
-        "required": [
-          "status"
-        ]
+        "required": ["status"]
       },
       "ToolStateRunning": {
         "type": "object",
@@ -1288,15 +1192,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "start"
-            ]
+            "required": ["start"]
           }
         },
-        "required": [
-          "status",
-          "time"
-        ]
+        "required": ["status", "time"]
       },
       "ToolStateCompleted": {
         "type": "object",
@@ -1329,20 +1228,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "start",
-              "end"
-            ]
+            "required": ["start", "end"]
           }
         },
-        "required": [
-          "status",
-          "input",
-          "output",
-          "title",
-          "metadata",
-          "time"
-        ]
+        "required": ["status", "input", "output", "title", "metadata", "time"]
       },
       "ToolStateError": {
         "type": "object",
@@ -1368,18 +1257,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "start",
-              "end"
-            ]
+            "required": ["start", "end"]
           }
         },
-        "required": [
-          "status",
-          "input",
-          "error",
-          "time"
-        ]
+        "required": ["status", "input", "error", "time"]
       },
       "StepStartPart": {
         "type": "object",
@@ -1389,9 +1270,7 @@
             "const": "step-start"
           }
         },
-        "required": [
-          "type"
-        ]
+        "required": ["type"]
       },
       "StepFinishPart": {
         "type": "object",
@@ -1425,25 +1304,13 @@
                     "type": "number"
                   }
                 },
-                "required": [
-                  "read",
-                  "write"
-                ]
+                "required": ["read", "write"]
               }
             },
-            "required": [
-              "input",
-              "output",
-              "reasoning",
-              "cache"
-            ]
+            "required": ["input", "output", "reasoning", "cache"]
           }
         },
-        "required": [
-          "type",
-          "cost",
-          "tokens"
-        ]
+        "required": ["type", "cost", "tokens"]
       },
       "ProviderAuthError": {
         "type": "object",
@@ -1462,16 +1329,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "providerID",
-              "message"
-            ]
+            "required": ["providerID", "message"]
           }
         },
-        "required": [
-          "name",
-          "data"
-        ]
+        "required": ["name", "data"]
       },
       "UnknownError": {
         "type": "object",
@@ -1487,15 +1348,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "message"
-            ]
+            "required": ["message"]
           }
         },
-        "required": [
-          "name",
-          "data"
-        ]
+        "required": ["name", "data"]
       },
       "MessageOutputLengthError": {
         "type": "object",
@@ -1508,10 +1364,7 @@
             "type": "object"
           }
         },
-        "required": [
-          "name",
-          "data"
-        ]
+        "required": ["name", "data"]
       },
       "MessageAbortedError": {
         "type": "object",
@@ -1524,10 +1377,7 @@
             "type": "object"
           }
         },
-        "required": [
-          "name",
-          "data"
-        ]
+        "required": ["name", "data"]
       },
       "Event.message.removed": {
         "type": "object",
@@ -1546,16 +1396,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "sessionID",
-              "messageID"
-            ]
+            "required": ["sessionID", "messageID"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.message.part.updated": {
         "type": "object",
@@ -1577,17 +1421,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "part",
-              "sessionID",
-              "messageID"
-            ]
+            "required": ["part", "sessionID", "messageID"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.storage.write": {
         "type": "object",
@@ -1604,15 +1441,10 @@
               },
               "content": {}
             },
-            "required": [
-              "key"
-            ]
+            "required": ["key"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.session.updated": {
         "type": "object",
@@ -1628,15 +1460,10 @@
                 "$ref": "#/components/schemas/Session"
               }
             },
-            "required": [
-              "info"
-            ]
+            "required": ["info"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Session": {
         "type": "object",
@@ -1656,9 +1483,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "url"
-            ]
+            "required": ["url"]
           },
           "title": {
             "type": "string"
@@ -1676,10 +1501,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "created",
-              "updated"
-            ]
+            "required": ["created", "updated"]
           },
           "revert": {
             "type": "object",
@@ -1694,18 +1516,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "messageID",
-              "part"
-            ]
+            "required": ["messageID", "part"]
           }
         },
-        "required": [
-          "id",
-          "title",
-          "version",
-          "time"
-        ]
+        "required": ["id", "title", "version", "time"]
       },
       "Event.session.deleted": {
         "type": "object",
@@ -1721,15 +1535,10 @@
                 "$ref": "#/components/schemas/Session"
               }
             },
-            "required": [
-              "info"
-            ]
+            "required": ["info"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.session.idle": {
         "type": "object",
@@ -1745,15 +1554,10 @@
                 "type": "string"
               }
             },
-            "required": [
-              "sessionID"
-            ]
+            "required": ["sessionID"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.session.error": {
         "type": "object",
@@ -1796,10 +1600,7 @@
             }
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "Event.file.watcher.updated": {
         "type": "object",
@@ -1827,16 +1628,10 @@
                 ]
               }
             },
-            "required": [
-              "file",
-              "event"
-            ]
+            "required": ["file", "event"]
           }
         },
-        "required": [
-          "type",
-          "properties"
-        ]
+        "required": ["type", "properties"]
       },
       "App": {
         "type": "object",
@@ -1869,13 +1664,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "config",
-              "data",
-              "root",
-              "cwd",
-              "state"
-            ]
+            "required": ["config", "data", "root", "cwd", "state"]
           },
           "time": {
             "type": "object",
@@ -1886,13 +1675,7 @@
             }
           }
         },
-        "required": [
-          "user",
-          "hostname",
-          "git",
-          "path",
-          "time"
-        ]
+        "required": ["user", "hostname", "git", "path", "time"]
       },
       "Config": {
         "type": "object",
@@ -2011,10 +1794,7 @@
                             "type": "number"
                           }
                         },
-                        "required": [
-                          "input",
-                          "output"
-                        ]
+                        "required": ["input", "output"]
                       },
                       "limit": {
                         "type": "object",
@@ -2026,10 +1806,7 @@
                             "type": "number"
                           }
                         },
-                        "required": [
-                          "context",
-                          "output"
-                        ]
+                        "required": ["context", "output"]
                       },
                       "options": {
                         "type": "object",
@@ -2043,9 +1820,7 @@
                   "additionalProperties": {}
                 }
               },
-              "required": [
-                "models"
-              ]
+              "required": ["models"]
             },
             "description": "Custom provider configurations and model overrides"
           },
@@ -2103,9 +1878,7 @@
                             }
                           }
                         },
-                        "required": [
-                          "command"
-                        ]
+                        "required": ["command"]
                       }
                     }
                   },
@@ -2127,9 +1900,7 @@
                           }
                         }
                       },
-                      "required": [
-                        "command"
-                      ]
+                      "required": ["command"]
                     }
                   }
                 }
@@ -2370,12 +2141,7 @@
       },
       "LogLevel": {
         "type": "string",
-        "enum": [
-          "DEBUG",
-          "INFO",
-          "WARN",
-          "ERROR"
-        ],
+        "enum": ["DEBUG", "INFO", "WARN", "ERROR"],
         "description": "Log level"
       },
       "Provider": {
@@ -2406,12 +2172,7 @@
             }
           }
         },
-        "required": [
-          "name",
-          "env",
-          "id",
-          "models"
-        ]
+        "required": ["name", "env", "id", "models"]
       },
       "Model": {
         "type": "object",
@@ -2453,10 +2214,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "input",
-              "output"
-            ]
+            "required": ["input", "output"]
           },
           "limit": {
             "type": "object",
@@ -2468,10 +2226,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "context",
-              "output"
-            ]
+            "required": ["context", "output"]
           },
           "options": {
             "type": "object",
@@ -2518,10 +2273,7 @@
             "description": "Enable or disable the MCP server on startup"
           }
         },
-        "required": [
-          "type",
-          "command"
-        ],
+        "required": ["type", "command"],
         "additionalProperties": false
       },
       "McpRemoteConfig": {
@@ -2541,10 +2293,7 @@
             "description": "Enable or disable the MCP server on startup"
           }
         },
-        "required": [
-          "type",
-          "url"
-        ],
+        "required": ["type", "url"],
         "additionalProperties": false
       },
       "Error": {
@@ -2555,9 +2304,7 @@
             "additionalProperties": {}
           }
         },
-        "required": [
-          "data"
-        ]
+        "required": ["data"]
       },
       "Match": {
         "type": "object",
@@ -2569,9 +2316,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "text"
-            ]
+            "required": ["text"]
           },
           "lines": {
             "type": "object",
@@ -2580,9 +2325,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "text"
-            ]
+            "required": ["text"]
           },
           "line_number": {
             "type": "number"
@@ -2602,9 +2345,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "text"
-                  ]
+                  "required": ["text"]
                 },
                 "start": {
                   "type": "number"
@@ -2613,11 +2354,7 @@
                   "type": "number"
                 }
               },
-              "required": [
-                "match",
-                "start",
-                "end"
-              ]
+              "required": ["match", "start", "end"]
             }
           }
         },
@@ -2648,17 +2385,10 @@
                 "$ref": "#/components/schemas/Range"
               }
             },
-            "required": [
-              "uri",
-              "range"
-            ]
+            "required": ["uri", "range"]
           }
         },
-        "required": [
-          "name",
-          "kind",
-          "location"
-        ]
+        "required": ["name", "kind", "location"]
       },
       "Range": {
         "type": "object",
@@ -2673,10 +2403,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "line",
-              "character"
-            ]
+            "required": ["line", "character"]
           },
           "end": {
             "type": "object",
@@ -2688,16 +2415,10 @@
                 "type": "number"
               }
             },
-            "required": [
-              "line",
-              "character"
-            ]
+            "required": ["line", "character"]
           }
         },
-        "required": [
-          "start",
-          "end"
-        ]
+        "required": ["start", "end"]
       },
       "File": {
         "type": "object",
@@ -2713,19 +2434,10 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "added",
-              "deleted",
-              "modified"
-            ]
+            "enum": ["added", "deleted", "modified"]
           }
         },
-        "required": [
-          "path",
-          "added",
-          "removed",
-          "status"
-        ]
+        "required": ["path", "added", "removed", "status"]
       },
       "Mode": {
         "type": "object",
@@ -2743,10 +2455,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "modelID",
-              "providerID"
-            ]
+            "required": ["modelID", "providerID"]
           },
           "prompt": {
             "type": "string"
@@ -2758,10 +2467,7 @@
             }
           }
         },
-        "required": [
-          "name",
-          "tools"
-        ]
+        "required": ["name", "tools"]
       }
     }
   }

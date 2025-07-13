@@ -1,6 +1,7 @@
-import { ChatSidebar } from "@/pages/chat/components/chat-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ChatWindow } from "@/pages/chat/components/chat-window";
+import { ChatSidebar } from "@/pages/chat/components/chat-sidebar"
+import { ChatWindow } from "@/pages/chat/components/chat-window"
+
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export function ChatLayout() {
   return (
@@ -10,5 +11,5 @@ export function ChatLayout() {
         <ChatWindow />
       </SidebarInset>
     </SidebarProvider>
-  );
+  )
 }

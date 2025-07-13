@@ -1,5 +1,11 @@
 import * as React from "react"
+import type { TSession } from "@/types"
+import { Plus } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
+import { useCreateSession, useGetSessions } from "@/hooks/fetch/sessions"
+
+import { Button } from "@/components/ui/button"
 // import { SearchForm } from "@/components/search-form"
 import {
   Sidebar,
@@ -13,22 +19,14 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { useCreateSession, useGetSessions } from "@/hooks/fetch/sessions"
-import type { TSession } from "@/types"
-import { useNavigate } from "react-router-dom"
+export function ChatSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { isLoading } = useGetSessions()
 
-
-export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
-  const {
-    isLoading
-  } = useGetSessions();
-
-  const createSessionMutation = useCreateSession();
+  const createSessionMutation = useCreateSession()
 
   return (
     <Sidebar {...props}>
@@ -66,14 +64,8 @@ export function ChatSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
   )
 }
 
-
 const SessionList = () => {
-  const {
-    data: sessions,
-    isLoading,
-    isError,
-    error,
-  } = useGetSessions();
+  const { data: sessions, isLoading, isError, error } = useGetSessions()
 
   if (isLoading) {
     return (
@@ -85,16 +77,12 @@ const SessionList = () => {
   }
 
   if (isError) {
-    return (
-      <div className="text-red-500">{error.message}</div>
-    )
+    return <div className="text-red-500">{error.message}</div>
   }
 
   if (sessions === undefined || (sessions && sessions.length === 0)) {
     // TODO: Add a button to create a new session or create a new session on first chat message
-    return (
-      <div>No sessions found.</div>
-    )
+    return <div>No sessions found.</div>
   }
 
   return (
@@ -104,13 +92,10 @@ const SessionList = () => {
       ))}
     </>
   )
-
-
 }
 
-
 const Session = ({ session }: { session: TSession }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   // const deleteSession = useDeleteSession();
 
   // const handleDelete = (e: React.MouseEvent) => {
@@ -138,5 +123,5 @@ const Session = ({ session }: { session: TSession }) => {
         </button> */}
       </SidebarMenuButton>
     </SidebarMenuItem>
-  );
+  )
 }

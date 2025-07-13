@@ -1,19 +1,23 @@
-import type { TMessage } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { TMessage } from "@/types"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useGetMessages = ({sessionId}: {sessionId: string | undefined}) =>
+export const useGetMessages = ({
+  sessionId,
+}: {
+  sessionId: string | undefined
+}) =>
   useQuery<TMessage[]>({
     queryKey: ["messages", sessionId],
     queryFn: async () => {
-      const res = await fetch(`/api/session/${sessionId}/message`);
-      if (!res.ok) throw new Error("Failed to fetch messages");
-      return res.json();
+      const res = await fetch(`/api/session/${sessionId}/message`)
+      if (!res.ok) throw new Error("Failed to fetch messages")
+      return res.json()
     },
     enabled: !!sessionId,
-  });
+  })
 
 export const useSendMessage = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async ({
@@ -23,13 +27,13 @@ export const useSendMessage = () => {
       mode = "build",
       text,
     }: {
-      sessionId: string;
-      providerID: string;
-      modelID: string;
-      mode?: string;
-      text: string;
+      sessionId: string
+      providerID: string
+      modelID: string
+      mode?: string
+      text: string
     }) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["messages", sessionId] })
       const res = await fetch(`/api/session/${sessionId}/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -39,12 +43,14 @@ export const useSendMessage = () => {
           mode,
           parts: [{ type: "text", text }],
         }),
-      });
-      if (!res.ok) throw new Error("Failed to send message");
-      return res.json();
+      })
+      if (!res.ok) throw new Error("Failed to send message")
+      return res.json()
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", variables.sessionId] });
+      queryClient.invalidateQueries({
+        queryKey: ["messages", variables.sessionId],
+      })
     },
-  });
-};
+  })
+}
