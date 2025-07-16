@@ -1,2 +1,2 @@
-export * from "./useStickToBottom.js"
-export * from "./StickToBottom.js"
+export * from "./hook.js"
+export * from "./component.js"

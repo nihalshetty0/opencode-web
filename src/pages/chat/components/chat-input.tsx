@@ -62,7 +62,7 @@ export function ChatInput() {
 
     queryClient.setQueryData(
       ["messages", activeSession?.id],
-      (old: TMessageWithParts[]) => [...old, optimisticNewMessageWithParts]
+      (old: TMessageWithParts[] = []) => [...old, optimisticNewMessageWithParts]
     )
 
     sendMessageMutation.mutate(
@@ -76,7 +76,7 @@ export function ChatInput() {
           setInput(enteredInput)
           queryClient.setQueryData(
             ["messages", activeSession?.id],
-            (old: TMessageWithParts[]) =>
+            (old: TMessageWithParts[] = []) =>
               old.filter(
                 (m) => m.info.id !== optimisticNewMessageWithParts.info.id
               )

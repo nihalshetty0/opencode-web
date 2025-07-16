@@ -19,7 +19,7 @@ import {
   type StickToBottomOptions,
   type StickToBottomState,
   type StopScroll,
-} from "./useStickToBottom.js"
+} from "./hook.js"
 
 export interface StickToBottomContext {
   contentRef: React.MutableRefObject<HTMLElement | null> &
