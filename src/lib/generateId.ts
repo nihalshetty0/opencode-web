@@ -23,7 +23,7 @@ export function generateNewID(
   prefix: string,
   descending: boolean = false
 ): string {
-  const currentTimestamp = Date.now() // JavaScript equivalent of time.Now().UnixMilli()
+  const currentTimestamp = Date.now()
 
   if (currentTimestamp !== lastTimestamp) {
     lastTimestamp = currentTimestamp

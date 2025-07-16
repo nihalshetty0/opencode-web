@@ -2,12 +2,14 @@ import { SessionChat } from "@/pages/chat/components/session-chat"
 
 import { useGetAppInfo } from "@/hooks/fetch/app"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
+import { useHandleSessionMessageEvents } from "@/hooks/use-handle-session-message-events"
 
 export function ChatWindow() {
+  useHandleSessionMessageEvents()
   return (
     <>
       <ChatHeader />
-      <SessionChat className={""} />
+      <SessionChat />
     </>
   )
 }

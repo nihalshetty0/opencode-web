@@ -1,8 +1,5 @@
-import { useEffect } from "react"
 import { ChatInput } from "@/pages/chat/components/chat-input"
 import { Messages } from "@/pages/chat/components/messages"
-import type { TMessageWithParts } from "@/types"
-import { useQueryClient } from "@tanstack/react-query"
 
 import { cn } from "@/lib/utils"
 import { useGetMessages } from "@/hooks/fetch/messages"
@@ -24,43 +21,6 @@ export function SessionChat({ className }: { className?: string }) {
     isError: isMessagesError,
     error: messagesError,
   } = useGetMessages({ sessionId: activeSession?.id })
-
-  const queryClient = useQueryClient()
-
-  // Streaming: Listen to /event for message updates
-  useEffect(() => {
-    if (!activeSession?.id) return
-    const eventSource = new EventSource("/api/event")
-    eventSource.onmessage = (event) => {
-      const eventData = JSON.parse(event.data)
-      if (
-        (eventData.type === "message.updated" ||
-          eventData.type === "message.part.updated") &&
-        eventData?.properties?.info?.role === "assistant" &&
-        eventData?.properties?.info?.sessionID === activeSession.id
-      ) {
-        // queryClient.setQueryData(
-        //   ["messages", activeSession.id],
-        //   (old: TMessageWithParts[] | undefined) => {
-        //     if (!old) return [eventData.properties.info]
-        //     const idx = old.findIndex(
-        //       (msg) => msg.info.id === eventData.properties.info.id
-        //     )
-        //     if (idx !== -1) {
-        //       const updated = [...old]
-        //       updated[idx] = { ...updated[idx], ...eventData.properties.info }
-        //       return updated
-        //     } else {
-        //       return [...old, eventData.properties.info]
-        //     }
-        //   }
-        // )
-      }
-    }
-    return () => {
-      eventSource.close()
-    }
-  }, [activeSession?.id, queryClient])
 
   if (isActiveSessionLoading)
     return <div className="p-6">Loading session...</div>

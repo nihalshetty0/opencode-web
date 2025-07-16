@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import type { operations } from "@/types/openapi-types"
 
-type TGetSessionByIdMessageResponse =
+export type TGetSessionByIdMessageResponse =
   operations["getSessionByIdMessage"]["responses"]["200"]["content"]["application/json"]
 
 export const useGetMessages = ({

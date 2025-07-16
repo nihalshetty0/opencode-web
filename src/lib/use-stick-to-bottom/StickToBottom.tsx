@@ -1,7 +1,4 @@
-/*!---------------------------------------------------------------------------------------------
- *  Copyright (c) StackBlitz. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// ref: https://github.com/mihaisavezi/use-stick-to-bottom
 
 import * as React from "react"
 import {
@@ -36,7 +33,7 @@ export interface StickToBottomContext {
   get targetScrollTop(): GetTargetScrollTop | null
   set targetScrollTop(targetScrollTop: GetTargetScrollTop | null)
   state: StickToBottomState
-  scrollMode: "element" | "document" // Add scrollMode to context
+  scrollMode: "element" | "document"
 }
 
 const StickToBottomContext = createContext<StickToBottomContext | null>(null)

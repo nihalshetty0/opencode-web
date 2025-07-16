@@ -169,6 +169,8 @@
     @apply bg-background text-foreground;
     font-family: "Geist Mono", monospace;
   }
+  /* from shadcn/ui */
+  /* Custom scrollbar styling. Thanks @pranathiperii. */
   ::-webkit-scrollbar {
     width: 5px;
   }

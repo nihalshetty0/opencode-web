@@ -1,11 +1,8 @@
-/*!---------------------------------------------------------------------------------------------
- *  Copyright (c) StackBlitz. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// ref: https://github.com/mihaisavezi/use-stick-to-bottom
 
 import {
   useCallback,
-  useEffect, // <-- Import useEffect
+  useEffect,
   useMemo,
   useRef,
   useState,

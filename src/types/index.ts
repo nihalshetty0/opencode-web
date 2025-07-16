@@ -14,3 +14,5 @@ export type TMessageWithParts = {
   info: TMessage
   parts: TMessagePart[]
 }
+
+export type TEvent = components["schemas"]["Event"]
