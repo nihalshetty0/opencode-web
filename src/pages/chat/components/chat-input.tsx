@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { ProviderSelect } from "@/pages/chat/components/provider-select"
 import { useSelectedModelStore } from "@/store"
-import type { TMessage } from "@/types"
+import type { TMessagePart, TMessageWithParts } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { useSendMessage } from "@/hooks/fetch/messages"
+import { generateNewID, ID } from "@/lib/generateId"
+import {
+  useSendMessage,
+  type TPostSessionByIdMessageRequest,
+} from "@/hooks/fetch/messages"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
 
 import { ChatInputSubmit, ChatInputTextarea } from "@/components/chat-input"
@@ -23,42 +27,59 @@ export function ChatInput() {
     e.preventDefault()
     if (!input.trim() || !activeSession?.id || !selectedModel) return
 
+    const messageID = generateNewID(ID.MESSAGE)
     //  add a temp user message to the messages array
-    const newMessage: TMessage = {
-      id: crypto.randomUUID(), // temp assign a random id
-      role: "user",
-      parts: [
-        {
-          type: "text",
-          text: input,
-        },
-      ],
-      time: {
-        created: Date.now(),
-      },
+    const newMessagePart: TMessagePart = {
+      id: generateNewID(ID.PART),
+      sessionID: activeSession.id,
+      messageID,
+      type: "text",
+      text: input,
     }
+
+    const payload: TPostSessionByIdMessageRequest = {
+      messageID,
+      providerID: selectedModel.providerID,
+      modelID: selectedModel.modelID,
+      mode: "build",
+      parts: [newMessagePart],
+    }
+
     const enteredInput = input
     setInput("")
 
+    const optimisticNewMessageWithParts: TMessageWithParts = {
+      info: {
+        role: "user",
+        sessionID: activeSession.id,
+        time: {
+          created: Date.now(),
+        },
+        id: messageID,
+      },
+      parts: [newMessagePart],
+    }
+
     queryClient.setQueryData(
       ["messages", activeSession?.id],
-      (old: TMessage[]) => [...old, newMessage]
+      (old: TMessageWithParts[]) => [...old, optimisticNewMessageWithParts]
     )
 
     sendMessageMutation.mutate(
       {
         sessionId: activeSession?.id,
-        providerID: selectedModel?.providerID ?? "",
-        modelID: selectedModel?.modelID ?? "",
-        mode: "build",
-        text: input,
+        payload,
       },
       {
         onError: () => {
+          // revert the optimistic update
           setInput(enteredInput)
           queryClient.setQueryData(
             ["messages", activeSession?.id],
-            (old: TMessage[]) => old.filter((m) => m.id !== newMessage.id)
+            (old: TMessageWithParts[]) =>
+              old.filter(
+                (m) => m.info.id !== optimisticNewMessageWithParts.info.id
+              )
           )
         },
       }

@@ -1,15 +1,19 @@
 import { useMemo } from "react"
-import type { TSession } from "@/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 
+import type { operations } from "@/types/openapi-types"
+
+export type TGetSessionsResponse =
+  operations["getSession"]["responses"]["200"]["content"]["application/json"]
+
 export const useGetSessions = () =>
-  useQuery<TSession[]>({
+  useQuery<TGetSessionsResponse>({
     queryKey: ["sessions"],
     queryFn: async () => {
       const res = await fetch("/api/session")
       if (!res.ok) throw new Error("Failed to fetch sessions")
-      const data: TSession[] = await res.json()
+      const data: TGetSessionsResponse = await res.json()
       data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
       return data
     },
@@ -31,10 +35,14 @@ export const useGetActiveSession = () => {
  * Create a new session.
  * Returns a mutation object. On success, invalidates the "sessions" query.
  */
+
+export type TPostSessionResponse =
+  operations["postSession"]["responses"]["200"]["content"]["application/json"]
+
 export const useCreateSession = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<TPostSessionResponse>({
     mutationFn: async () => {
       const res = await fetch("/api/session", {
         method: "POST",
@@ -53,10 +61,14 @@ export const useCreateSession = () => {
  * Delete a session by ID.
  * Returns a mutation object. On success, invalidates the "sessions" query.
  */
+
+export type TDeleteSessionResponse =
+  operations["deleteSessionById"]["responses"]["200"]["content"]["application/json"]
+
 export const useDeleteSession = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<TDeleteSessionResponse, Error, string>({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/session/${id}`, {
         method: "DELETE",

@@ -1,12 +1,16 @@
-import type { TMessage } from "@/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import type { operations } from "@/types/openapi-types"
+
+type TGetSessionByIdMessageResponse =
+  operations["getSessionByIdMessage"]["responses"]["200"]["content"]["application/json"]
 
 export const useGetMessages = ({
   sessionId,
 }: {
   sessionId: string | undefined
 }) =>
-  useQuery<TMessage[]>({
+  useQuery<TGetSessionByIdMessageResponse>({
     queryKey: ["messages", sessionId],
     queryFn: async () => {
       const res = await fetch(`/api/session/${sessionId}/message`)
@@ -16,33 +20,29 @@ export const useGetMessages = ({
     enabled: !!sessionId,
   })
 
+export type TPostSessionByIdMessageRequest = NonNullable<
+  operations["postSessionByIdMessage"]["requestBody"]
+>["content"]["application/json"]
+
+type TPostSessionByIdMessageResponse =
+  operations["postSessionByIdMessage"]["responses"]["200"]["content"]["application/json"]
+
 export const useSendMessage = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: async ({
-      sessionId,
-      providerID,
-      modelID,
-      mode = "build",
-      text,
-    }: {
+  return useMutation<
+    TPostSessionByIdMessageResponse,
+    Error,
+    {
       sessionId: string
-      providerID: string
-      modelID: string
-      mode?: string
-      text: string
-    }) => {
-      queryClient.invalidateQueries({ queryKey: ["messages", sessionId] })
+      payload: TPostSessionByIdMessageRequest
+    }
+  >({
+    mutationFn: async ({ sessionId, payload }) => {
       const res = await fetch(`/api/session/${sessionId}/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          providerID,
-          modelID,
-          mode,
-          parts: [{ type: "text", text }],
-        }),
+        body: JSON.stringify(payload),
       })
       if (!res.ok) throw new Error("Failed to send message")
       return res.json()

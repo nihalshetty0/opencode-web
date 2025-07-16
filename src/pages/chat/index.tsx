@@ -7,7 +7,7 @@ export function ChatLayout() {
   return (
     <SidebarProvider>
       <ChatSidebar />
-      <SidebarInset className="border-b">
+      <SidebarInset className="">
         <ChatWindow />
       </SidebarInset>
     </SidebarProvider>

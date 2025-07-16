@@ -1,8 +1,12 @@
-import type { TProvidersResponse } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
+import type { operations } from "@/types/openapi-types"
+
+export type TGetProvidersResponse =
+  operations["getConfigProviders"]["responses"]["200"]["content"]["application/json"]
+
 export const useGetProviders = () =>
-  useQuery<TProvidersResponse>({
+  useQuery<TGetProvidersResponse>({
     queryKey: ["providers"],
     queryFn: async () => {
       const res = await fetch("/api/config/providers")

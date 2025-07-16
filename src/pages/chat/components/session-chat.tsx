@@ -1,6 +1,8 @@
 import { useEffect } from "react"
 import { ChatInput } from "@/pages/chat/components/chat-input"
 import { Messages } from "@/pages/chat/components/messages"
+import type { TMessageWithParts } from "@/types"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { cn } from "@/lib/utils"
 import { useGetMessages } from "@/hooks/fetch/messages"
@@ -23,41 +25,42 @@ export function SessionChat({ className }: { className?: string }) {
     error: messagesError,
   } = useGetMessages({ sessionId: activeSession?.id })
 
-  // Streaming: Listen to /event for message updates
-  // useEffect(() => {
-  //   if (!sessionId) return;
-  //   const eventSource = new EventSource("/api/event");
-  //   eventSource.onmessage = (event) => {
-  //     const eventData = JSON.parse(event.data);
-  //     if (
-  //       (eventData.type === "message.updated" || eventData.type === "message.part.updated") &&
-  //       eventData?.properties?.info?.role === "assistant" &&
-  //       eventData?.properties?.info?.sessionID === sessionId
-  //     ) {
-  //       queryClient.setQueryData(["messages", sessionId], (old: Message[] | undefined) => {
-  //         if (!old) return [eventData.properties.info];
-  //         const idx = old.findIndex((msg) => msg.id === eventData.properties.info.id);
-  //         if (idx !== -1) {
-  //           const updated = [...old];
-  //           updated[idx] = { ...updated[idx], ...eventData.properties.info };
-  //           return updated;
-  //         } else {
-  //           return [...old, eventData.properties.info];
-  //         }
-  //       });
-  //     }
-  //   };
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, [sessionId, queryClient]);
+  const queryClient = useQueryClient()
 
+  // Streaming: Listen to /event for message updates
   useEffect(() => {
-    const container = document.getElementById("chat-messages")
-    if (container) {
-      container.scrollTop = container.scrollHeight
+    if (!activeSession?.id) return
+    const eventSource = new EventSource("/api/event")
+    eventSource.onmessage = (event) => {
+      const eventData = JSON.parse(event.data)
+      if (
+        (eventData.type === "message.updated" ||
+          eventData.type === "message.part.updated") &&
+        eventData?.properties?.info?.role === "assistant" &&
+        eventData?.properties?.info?.sessionID === activeSession.id
+      ) {
+        // queryClient.setQueryData(
+        //   ["messages", activeSession.id],
+        //   (old: TMessageWithParts[] | undefined) => {
+        //     if (!old) return [eventData.properties.info]
+        //     const idx = old.findIndex(
+        //       (msg) => msg.info.id === eventData.properties.info.id
+        //     )
+        //     if (idx !== -1) {
+        //       const updated = [...old]
+        //       updated[idx] = { ...updated[idx], ...eventData.properties.info }
+        //       return updated
+        //     } else {
+        //       return [...old, eventData.properties.info]
+        //     }
+        //   }
+        // )
+      }
     }
-  }, [messages])
+    return () => {
+      eventSource.close()
+    }
+  }, [activeSession?.id, queryClient])
 
   if (isActiveSessionLoading)
     return <div className="p-6">Loading session...</div>
@@ -76,10 +79,7 @@ export function SessionChat({ className }: { className?: string }) {
         className
       )}
     >
-      <div
-        id="chat-messages"
-        className="flex-1 overflow-y-auto px-6 space-y-2 min-h-0 py-4"
-      >
+      <div className="flex-1 px-6 space-y-2 min-h-0 py-4 overflow-x-hidden">
         {isMessagesLoading && (
           <div className="space-y-2">
             <Skeleton className="h-10 w-full" />

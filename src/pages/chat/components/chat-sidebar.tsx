@@ -3,10 +3,13 @@ import type { TSession } from "@/types"
 import { Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-import { useCreateSession, useGetSessions } from "@/hooks/fetch/sessions"
+import {
+  useCreateSession,
+  useDeleteSession,
+  useGetSessions,
+} from "@/hooks/fetch/sessions"
 
 import { Button } from "@/components/ui/button"
-// import { SearchForm } from "@/components/search-form"
 import {
   Sidebar,
   SidebarContent,
@@ -34,7 +37,7 @@ export function ChatSidebar({
         <div className="flex items-center gap-2 px-2 justify-between">
           <div className="flex items-center gap-1">
             <SidebarTrigger className="-ml-1" />
-            <p>Sessions</p>
+            <p>Chats</p>
           </div>
 
           <Button
@@ -44,13 +47,13 @@ export function ChatSidebar({
             disabled={createSessionMutation.isPending || isLoading}
           >
             <Plus />
-            {createSessionMutation.isPending ? "Creating..." : "New Session"}
+            {createSessionMutation.isPending ? "Creating..." : "New Chat"}
           </Button>
         </div>
-        {/* TODO: should search for sessions */}
+        {/* TODO: search for sessions */}
         {/* <SearchForm /> */}
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="">
         <SidebarGroup className="pt-1 px-3">
           <SidebarGroupContent className="px-2">
             <SidebarMenu className="gap-2">
@@ -96,12 +99,12 @@ const SessionList = () => {
 
 const Session = ({ session }: { session: TSession }) => {
   const navigate = useNavigate()
-  // const deleteSession = useDeleteSession();
+  const deleteSession = useDeleteSession()
 
-  // const handleDelete = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   deleteSession.mutate(session.id);
-  // };
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    deleteSession.mutate(session.id)
+  }
 
   return (
     <SidebarMenuItem key={session.id}>
@@ -111,7 +114,7 @@ const Session = ({ session }: { session: TSession }) => {
       >
         <span className="font-semibold">{session.title || session.id}</span>
         <span className="text-xs text-gray-500">ID: {session.id}</span>
-        {/* TODO: need better UX for deleting sessions */}
+        {/* TODO: need better UX to delete sessions */}
         {/* <button
           type="button"
           className="mt-2 text-red-500 text-xs self-end"
