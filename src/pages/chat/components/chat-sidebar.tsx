@@ -29,7 +29,18 @@ export function ChatSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const { isLoading } = useGetSessions()
 
+  const navigate = useNavigate()
   const createSessionMutation = useCreateSession()
+
+  const handleNewChat = () => {
+    createSessionMutation.mutate(undefined, {
+      onSuccess: (newSession) => {
+        if (newSession && newSession.id) {
+          navigate(`/s/${newSession.id}`)
+        }
+      },
+    })
+  }
 
   return (
     <Sidebar {...props}>
@@ -43,7 +54,7 @@ export function ChatSidebar({
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => createSessionMutation.mutate()}
+            onClick={handleNewChat}
             disabled={createSessionMutation.isPending || isLoading}
           >
             <Plus />
