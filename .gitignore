@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 
 .opencode
+.todo.md
 
 openapi.json
