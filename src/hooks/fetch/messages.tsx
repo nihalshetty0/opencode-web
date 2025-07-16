@@ -1,3 +1,4 @@
+import { url } from "@/app"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import type { operations } from "@/types/openapi-types"
@@ -13,7 +14,7 @@ export const useGetMessages = ({
   useQuery<TGetSessionByIdMessageResponse>({
     queryKey: ["messages", sessionId],
     queryFn: async () => {
-      const res = await fetch(`/api/session/${sessionId}/message`)
+      const res = await fetch(`${url}/api/session/${sessionId}/message`)
       if (!res.ok) throw new Error("Failed to fetch messages")
       return res.json()
     },
@@ -39,7 +40,7 @@ export const useSendMessage = () => {
     }
   >({
     mutationFn: async ({ sessionId, payload }) => {
-      const res = await fetch(`/api/session/${sessionId}/message`, {
+      const res = await fetch(`${url}/api/session/${sessionId}/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
