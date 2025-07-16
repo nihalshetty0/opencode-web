@@ -10,11 +10,14 @@ import {
   type TPostSessionByIdMessageRequest,
 } from "@/hooks/fetch/messages"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
+import { useGetMessages } from "@/hooks/fetch/messages"
 
 import { ChatInputSubmit, ChatInputTextarea } from "@/components/chat-input"
 
 export function ChatInput() {
   const { data: activeSession } = useGetActiveSession()
+
+  const { data: messages } = useGetMessages({ sessionId: activeSession?.id })
 
   const [input, setInput] = useState("")
 
@@ -65,12 +68,19 @@ export function ChatInput() {
       (old: TMessageWithParts[] = []) => [...old, optimisticNewMessageWithParts]
     )
 
+    const isFirstMessage = !messages || messages.length === 0;
+
     sendMessageMutation.mutate(
       {
         sessionId: activeSession?.id,
         payload,
       },
       {
+        onSuccess: () => {
+          if (isFirstMessage) {
+            queryClient.invalidateQueries({ queryKey: ["sessions"] });
+          }
+        },
         onError: () => {
           // revert the optimistic update
           setInput(enteredInput)

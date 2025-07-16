@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom"
 
 import {
   useCreateSession,
-  useDeleteSession,
   useGetSessions,
 } from "@/hooks/fetch/sessions"
 
@@ -110,12 +109,7 @@ const SessionList = () => {
 
 const Session = ({ session }: { session: TSession }) => {
   const navigate = useNavigate()
-  const deleteSession = useDeleteSession()
 
-  const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    deleteSession.mutate(session.id)
-  }
 
   return (
     <SidebarMenuItem key={session.id}>
