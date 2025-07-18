@@ -1,3 +1,4 @@
+import { url } from "@/app"
 import { useQuery } from "@tanstack/react-query"
 
 import type { operations } from "@/types/openapi-types"
@@ -9,7 +10,7 @@ export const useGetAppInfo = () =>
   useQuery<TGetAppResponse & { projectName: string }>({
     queryKey: ["appInfo"],
     queryFn: async () => {
-      const res = await fetch("/api/app")
+      const res = await fetch(`${url}/api/app`)
       if (!res.ok) throw new Error("Failed to fetch app info")
       const data = await res.json()
 

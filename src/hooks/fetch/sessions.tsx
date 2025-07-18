@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { url } from "@/app"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 
@@ -11,7 +12,7 @@ export const useGetSessions = () =>
   useQuery<TGetSessionsResponse>({
     queryKey: ["sessions"],
     queryFn: async () => {
-      const res = await fetch("/api/session")
+      const res = await fetch(`${url}/api/session`)
       if (!res.ok) throw new Error("Failed to fetch sessions")
       const data: TGetSessionsResponse = await res.json()
       data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
@@ -44,7 +45,7 @@ export const useCreateSession = () => {
 
   return useMutation<TPostSessionResponse>({
     mutationFn: async () => {
-      const res = await fetch("/api/session", {
+      const res = await fetch(`${url}/api/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })
@@ -70,7 +71,7 @@ export const useDeleteSession = () => {
 
   return useMutation<TDeleteSessionResponse, Error, string>({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/session/${id}`, {
+      const res = await fetch(`${url}/api/session/${id}`, {
         method: "DELETE",
       })
       if (!res.ok) throw new Error("Failed to delete session")

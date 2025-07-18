@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { queryClient } from "@/app"
+import { queryClient, url } from "@/app"
 import type { TEvent, TMessageWithParts } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -90,7 +90,7 @@ export function useHandleSessionMessageEvents() {
     if (!activeSessionId) return
 
     const eventSource = new EventSource(
-      `/api/event?sessionID=${activeSessionId}`
+      `${url}/api/event?sessionID=${activeSessionId}`
     )
     eventSource.onmessage = (event) => {
       const eventData: TEvent = JSON.parse(event.data)

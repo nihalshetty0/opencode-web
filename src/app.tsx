@@ -10,6 +10,8 @@ export const queryClient = new QueryClient({
   },
 })
 
+export const url = "http://localhost:4096"
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>

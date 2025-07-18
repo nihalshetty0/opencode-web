@@ -1,0 +1,2 @@
+export const BROKER_PORT_RANGE = [13943, 14839, 18503, 19304, 20197]
+export const BROKER_HOST = "127.0.0.1"
