@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@opencode-ai/sdk':
+        specifier: 0.1.0-alpha.20
+        version: 0.1.0-alpha.20
       '@radix-ui/react-dialog':
         specifier: ^1.1.14
         version: 1.1.14(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -483,6 +486,9 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@opencode-ai/sdk@0.1.0-alpha.20':
+    resolution: {integrity: sha512-9nLptNbW/7MsGmrDgGd2s+0D3/MniXTPFgjLFLtMN4SKkL2vBGCvDl6QkHgL4xptiacmBV/JqNLDPmTHHtdmXg==}
 
   '@radix-ui/number@1.1.1':
     resolution: {integrity: sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g==}
@@ -2258,6 +2264,8 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
+
+  '@opencode-ai/sdk@0.1.0-alpha.20': {}
 
   '@radix-ui/number@1.1.1': {}
 

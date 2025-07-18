@@ -1,16 +1,13 @@
 import { useState } from "react"
 import { ProviderSelect } from "@/pages/chat/components/provider-select"
 import { useSelectedModelStore } from "@/store"
-import type { TMessagePart, TMessageWithParts } from "@/types"
+import type { MessageWithParts } from "@/types"
+import type { Opencode } from "@opencode-ai/sdk"
 import { useQueryClient } from "@tanstack/react-query"
 
 import { generateNewID, ID } from "@/lib/generateId"
-import {
-  useSendMessage,
-  type TPostSessionByIdMessageRequest,
-} from "@/hooks/fetch/messages"
+import { useGetMessages, useSendMessage } from "@/hooks/fetch/messages"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
-import { useGetMessages } from "@/hooks/fetch/messages"
 
 import { ChatInputSubmit, ChatInputTextarea } from "@/components/chat-input"
 
@@ -32,7 +29,7 @@ export function ChatInput() {
 
     const messageID = generateNewID(ID.MESSAGE)
     //  add a temp user message to the messages array
-    const newMessagePart: TMessagePart = {
+    const newMessagePart: Opencode.TextPart = {
       id: generateNewID(ID.PART),
       sessionID: activeSession.id,
       messageID,
@@ -40,7 +37,7 @@ export function ChatInput() {
       text: input,
     }
 
-    const payload: TPostSessionByIdMessageRequest = {
+    const payload: Opencode.SessionChatParams = {
       messageID,
       providerID: selectedModel.providerID,
       modelID: selectedModel.modelID,
@@ -51,7 +48,7 @@ export function ChatInput() {
     const enteredInput = input
     setInput("")
 
-    const optimisticNewMessageWithParts: TMessageWithParts = {
+    const optimisticNewMessageWithParts: MessageWithParts = {
       info: {
         role: "user",
         sessionID: activeSession.id,
@@ -65,10 +62,10 @@ export function ChatInput() {
 
     queryClient.setQueryData(
       ["messages", activeSession?.id],
-      (old: TMessageWithParts[] = []) => [...old, optimisticNewMessageWithParts]
+      (old: MessageWithParts[] = []) => [...old, optimisticNewMessageWithParts]
     )
 
-    const isFirstMessage = !messages || messages.length === 0;
+    const isFirstMessage = !messages || messages.length === 0
 
     sendMessageMutation.mutate(
       {
@@ -78,7 +75,7 @@ export function ChatInput() {
       {
         onSuccess: () => {
           if (isFirstMessage) {
-            queryClient.invalidateQueries({ queryKey: ["sessions"] });
+            queryClient.invalidateQueries({ queryKey: ["sessions"] })
           }
         },
         onError: () => {
@@ -86,7 +83,7 @@ export function ChatInput() {
           setInput(enteredInput)
           queryClient.setQueryData(
             ["messages", activeSession?.id],
-            (old: TMessageWithParts[] = []) =>
+            (old: MessageWithParts[] = []) =>
               old.filter(
                 (m) => m.info.id !== optimisticNewMessageWithParts.info.id
               )

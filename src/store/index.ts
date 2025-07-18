@@ -1,12 +1,12 @@
-import type { TSelectedModel } from "@/types"
+import type { SelectedModel } from "@/types"
 import { create } from "zustand"
 
-type TSelectedModelState = {
-  selectedModel: TSelectedModel | null
-  setSelectedModel: (selection: TSelectedModel | null) => void
+type SelectedModelState = {
+  selectedModel: SelectedModel | null
+  setSelectedModel: (selection: SelectedModel | null) => void
 }
 
-export const useSelectedModelStore = create<TSelectedModelState>((set) => ({
+export const useSelectedModelStore = create<SelectedModelState>((set) => ({
   selectedModel: null,
   setSelectedModel: (selection) => set({ selectedModel: selection }),
 }))

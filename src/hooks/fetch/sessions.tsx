@@ -1,23 +1,19 @@
 import { useMemo } from "react"
-import { url } from "@/app"
+import type { Opencode } from "@opencode-ai/sdk"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 
-import type { operations } from "@/types/openapi-types"
-
-export type TGetSessionsResponse =
-  operations["getSession"]["responses"]["200"]["content"]["application/json"]
+import { opencodeClient } from "@/lib/opencode-client"
 
 export const useGetSessions = () =>
-  useQuery<TGetSessionsResponse>({
+  useQuery<Opencode.SessionListResponse>({
     queryKey: ["sessions"],
-    queryFn: async () => {
-      const res = await fetch(`${url}/api/session`)
-      if (!res.ok) throw new Error("Failed to fetch sessions")
-      const data: TGetSessionsResponse = await res.json()
-      data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
-      return data
-    },
+    queryFn: () =>
+      opencodeClient.session.list().then((data) => {
+        // Sort by creation time (newest first)
+        data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
+        return data
+      }),
   })
 
 export const useGetActiveSession = () => {
@@ -26,7 +22,7 @@ export const useGetActiveSession = () => {
 
   const activeSession = useMemo(() => {
     if (!states.data || !sessionId) return null
-    return states.data.find((s) => s.id === sessionId)
+    return states.data.find((s: Opencode.Session) => s.id === sessionId)
   }, [states.data, sessionId])
 
   return { ...states, data: activeSession }
@@ -36,22 +32,11 @@ export const useGetActiveSession = () => {
  * Create a new session.
  * Returns a mutation object. On success, invalidates the "sessions" query.
  */
-
-export type TPostSessionResponse =
-  operations["postSession"]["responses"]["200"]["content"]["application/json"]
-
 export const useCreateSession = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<TPostSessionResponse>({
-    mutationFn: async () => {
-      const res = await fetch(`${url}/api/session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      })
-      if (!res.ok) throw new Error("Failed to create session")
-      return res.json()
-    },
+  return useMutation<Opencode.Session>({
+    mutationFn: () => opencodeClient.session.create(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] })
     },
@@ -62,21 +47,11 @@ export const useCreateSession = () => {
  * Delete a session by ID.
  * Returns a mutation object. On success, invalidates the "sessions" query.
  */
-
-export type TDeleteSessionResponse =
-  operations["deleteSessionById"]["responses"]["200"]["content"]["application/json"]
-
 export const useDeleteSession = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<TDeleteSessionResponse, Error, string>({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`${url}/api/session/${id}`, {
-        method: "DELETE",
-      })
-      if (!res.ok) throw new Error("Failed to delete session")
-      return await res.json()
-    },
+  return useMutation<Opencode.SessionDeleteResponse, Error, string>({
+    mutationFn: (id: string) => opencodeClient.session.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] })
     },

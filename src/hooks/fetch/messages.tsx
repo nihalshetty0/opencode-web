@@ -1,53 +1,35 @@
-import { url } from "@/app"
+import type { Opencode } from "@opencode-ai/sdk"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import type { operations } from "@/types/openapi-types"
-
-export type TGetSessionByIdMessageResponse =
-  operations["getSessionByIdMessage"]["responses"]["200"]["content"]["application/json"]
+import { opencodeClient } from "@/lib/opencode-client"
 
 export const useGetMessages = ({
   sessionId,
 }: {
   sessionId: string | undefined
 }) =>
-  useQuery<TGetSessionByIdMessageResponse>({
+  useQuery<Opencode.SessionMessagesResponse>({
     queryKey: ["messages", sessionId],
-    queryFn: async () => {
-      const res = await fetch(`${url}/api/session/${sessionId}/message`)
-      if (!res.ok) throw new Error("Failed to fetch messages")
-      return res.json()
+    queryFn: () => {
+      if (!sessionId) throw new Error("Session ID is required")
+      return opencodeClient.session.messages(sessionId)
     },
     enabled: !!sessionId,
   })
-
-export type TPostSessionByIdMessageRequest = NonNullable<
-  operations["postSessionByIdMessage"]["requestBody"]
->["content"]["application/json"]
-
-type TPostSessionByIdMessageResponse =
-  operations["postSessionByIdMessage"]["responses"]["200"]["content"]["application/json"]
 
 export const useSendMessage = () => {
   const queryClient = useQueryClient()
 
   return useMutation<
-    TPostSessionByIdMessageResponse,
+    Opencode.AssistantMessage,
     Error,
     {
       sessionId: string
-      payload: TPostSessionByIdMessageRequest
+      payload: Opencode.SessionChatParams
     }
   >({
-    mutationFn: async ({ sessionId, payload }) => {
-      const res = await fetch(`${url}/api/session/${sessionId}/message`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) throw new Error("Failed to send message")
-      return res.json()
-    },
+    mutationFn: ({ sessionId, payload }) =>
+      opencodeClient.session.chat(sessionId, payload),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["messages", variables.sessionId],

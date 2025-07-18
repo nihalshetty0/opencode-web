@@ -1,18 +1,12 @@
-import type { components } from "./openapi-types"
+import type { Opencode } from "@opencode-ai/sdk"
 
-export interface TSelectedModel {
+export interface SelectedModel {
   providerID: string
   modelID: string
 }
 
-export type TSession = components["schemas"]["Session"]
-
-export type TMessage = components["schemas"]["Message"]
-export type TMessagePart = components["schemas"]["Part"]
-
-export type TMessageWithParts = {
-  info: TMessage
-  parts: TMessagePart[]
+// Custom structure for UI compatibility
+export type MessageWithParts = {
+  info: Opencode.Message
+  parts: Opencode.Part[]
 }
-
-export type TEvent = components["schemas"]["Event"]

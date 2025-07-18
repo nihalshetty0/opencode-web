@@ -11,6 +11,8 @@ export const ID = {
   PART: "prt",
 }
 
+const length = 26
+
 // export const generateNewID = (prefix: string) => {
 //   return `${prefix}_${ulid()}`
 // }
