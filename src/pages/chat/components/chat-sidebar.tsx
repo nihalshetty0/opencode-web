@@ -1,12 +1,9 @@
 import * as React from "react"
-import type { TSession } from "@/types"
+import type { Opencode } from "@opencode-ai/sdk"
 import { Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-import {
-  useCreateSession,
-  useGetSessions,
-} from "@/hooks/fetch/sessions"
+import { useCreateSession, useGetSessions } from "@/hooks/fetch/sessions"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -107,9 +104,8 @@ const SessionList = () => {
   )
 }
 
-const Session = ({ session }: { session: TSession }) => {
+const Session = ({ session }: { session: Opencode.Session }) => {
   const navigate = useNavigate()
-
 
   return (
     <SidebarMenuItem key={session.id}>

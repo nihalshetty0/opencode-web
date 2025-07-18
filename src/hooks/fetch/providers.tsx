@@ -1,17 +1,16 @@
-import { url } from "@/app"
+import type { Opencode } from "@opencode-ai/sdk"
 import { useQuery } from "@tanstack/react-query"
 
-import type { operations } from "@/types/openapi-types"
-
-export type TGetProvidersResponse =
-  operations["getConfigProviders"]["responses"]["200"]["content"]["application/json"]
-
 export const useGetProviders = () =>
-  useQuery<TGetProvidersResponse>({
+  useQuery<Opencode.AppProvidersResponse>({
     queryKey: ["providers"],
     queryFn: async () => {
-      const res = await fetch(`${url}/api/config/providers`)
-      if (!res.ok) throw new Error("Failed to fetch providers")
-      return res.json()
+      const response = await fetch(
+        "http://localhost:15096/api/config/providers"
+      )
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      return response.json()
     },
   })
