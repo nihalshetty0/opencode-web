@@ -1,0 +1,11 @@
+{
+  "extends": "@workspace/typescript-config/node",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "outDir": "dist",
+    "rootDir": "./",
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["dist"],
+
+} 
