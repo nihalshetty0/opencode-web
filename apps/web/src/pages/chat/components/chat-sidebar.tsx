@@ -1,9 +1,11 @@
 import * as React from "react"
+import { useLastSessionStore } from "@/store/last-session"
 import type { Opencode } from "@opencode-ai/sdk"
 import { Plus } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
-import { useCreateSession, useGetSessions } from "@/hooks/fetch/sessions"
+import { useGetSessions } from "@/hooks/fetch/sessions"
+import { useUrlParams } from "@/hooks/use-url-params"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,28 +21,28 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { InstanceSwitcher } from "@/components/instance-switcher"
 
 export function ChatSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { isLoading } = useGetSessions()
 
-  const navigate = useNavigate()
-  const createSessionMutation = useCreateSession()
+  const [, setSearchParams] = useSearchParams()
 
   const handleNewChat = () => {
-    createSessionMutation.mutate(undefined, {
-      onSuccess: (newSession) => {
-        if (newSession && newSession.id) {
-          navigate(`/s/${newSession.id}`)
-        }
-      },
+    // Clear session param to start a fresh draft; first message will create session
+    setSearchParams((prev: URLSearchParams) => {
+      const next = new URLSearchParams(prev)
+      next.delete("session")
+      return next
     })
   }
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="px-3 py-4">
+      <SidebarHeader className="px-3 py-4 space-y-3">
+        <InstanceSwitcher />
         <div className="flex items-center gap-2 px-2 justify-between">
           <div className="flex items-center gap-1">
             <SidebarTrigger className="-ml-1" />
@@ -51,10 +53,10 @@ export function ChatSidebar({
             variant="secondary"
             size="sm"
             onClick={handleNewChat}
-            disabled={createSessionMutation.isPending || isLoading}
+            disabled={isLoading}
           >
             <Plus />
-            {createSessionMutation.isPending ? "Creating..." : "New Chat"}
+            New Chat
           </Button>
         </div>
         {/* TODO: search for sessions */}
@@ -105,13 +107,22 @@ const SessionList = () => {
 }
 
 const Session = ({ session }: { session: Opencode.Session }) => {
-  const navigate = useNavigate()
+  const [, setSearchParams] = useSearchParams()
+  const setLastSession = useLastSessionStore((s) => s.setLastSession)
+  const { cwd } = useUrlParams()
 
   return (
     <SidebarMenuItem key={session.id}>
       <SidebarMenuButton
         className="h-auto text-card-foreground flex flex-col gap-4 border py-3 shadow-sm items-start px-4"
-        onClick={() => navigate(`/s/${session.id}`)}
+        onClick={() => {
+          if (cwd) setLastSession(cwd, session.id)
+          setSearchParams((prev: URLSearchParams) => {
+            const next = new URLSearchParams(prev)
+            next.set("session", session.id)
+            return next
+          })
+        }}
       >
         <span className="font-semibold">{session.title || session.id}</span>
         <span className="text-xs text-gray-500">ID: {session.id}</span>

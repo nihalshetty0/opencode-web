@@ -1,23 +1,28 @@
 import { useMemo } from "react"
 import type { Opencode } from "@opencode-ai/sdk"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
 
-import { opencodeClient } from "@/lib/opencode-client"
+import { useOpencodeClient } from "@/hooks/use-opencode-client"
+import { useUrlParams } from "@/hooks/use-url-params"
 
-export const useGetSessions = () =>
-  useQuery<Opencode.SessionListResponse>({
-    queryKey: ["sessions"],
+export const useGetSessions = () => {
+  const opencodeClient = useOpencodeClient()
+  const { cwd } = useUrlParams()
+
+  return useQuery<Opencode.SessionListResponse>({
+    queryKey: ["sessions", { cwd }],
+    enabled: !!opencodeClient && !!cwd,
     queryFn: () =>
-      opencodeClient.session.list().then((data) => {
+      opencodeClient!.session.list().then((data) => {
         // Sort by creation time (newest first)
         data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
         return data
       }),
   })
+}
 
 export const useGetActiveSession = () => {
-  const { sessionId } = useParams<{ sessionId: string }>()
+  const { sessionId } = useUrlParams()
   const states = useGetSessions()
 
   const activeSession = useMemo(() => {
@@ -34,11 +39,16 @@ export const useGetActiveSession = () => {
  */
 export const useCreateSession = () => {
   const queryClient = useQueryClient()
+  const opencodeClient = useOpencodeClient()
+  const { cwd } = useUrlParams()
 
   return useMutation<Opencode.Session>({
-    mutationFn: () => opencodeClient.session.create(),
+    mutationFn: () => {
+      if (!opencodeClient) throw new Error("Opencode client not available")
+      return opencodeClient.session.create()
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] })
+      queryClient.invalidateQueries({ queryKey: ["sessions", { cwd }] })
     },
   })
 }
@@ -49,11 +59,16 @@ export const useCreateSession = () => {
  */
 export const useDeleteSession = () => {
   const queryClient = useQueryClient()
+  const opencodeClient = useOpencodeClient()
+  const { cwd } = useUrlParams()
 
   return useMutation<Opencode.SessionDeleteResponse, Error, string>({
-    mutationFn: (id: string) => opencodeClient.session.delete(id),
+    mutationFn: (id: string) => {
+      if (!opencodeClient) throw new Error("Opencode client not available")
+      return opencodeClient.session.delete(id)
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] })
+      queryClient.invalidateQueries({ queryKey: ["sessions", { cwd }] })
     },
   })
 }

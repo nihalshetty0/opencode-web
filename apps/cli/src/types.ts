@@ -4,4 +4,5 @@ export interface Instance {
   host: string
   status: "online" | "offline"
   lastSeen?: number
+  startedAt: number
 }

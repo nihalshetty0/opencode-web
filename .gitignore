@@ -25,4 +25,6 @@ dist-ssr
 
 .opencode
 .todo.md
+.execute.md
+.prd.md
 openapi.json

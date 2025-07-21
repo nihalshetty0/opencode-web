@@ -14,10 +14,12 @@ export default function createProcRoutes(instances: Instance[]) {
     if (!cwd || !instancePort)
       return res.status(400).send("Missing cwd or port")
     let inst = instances.find((i) => i.cwd === cwd)
+    // in case port changes for a cwd
     if (inst) {
       inst.port = instancePort
       inst.lastSeen = Date.now()
       inst.status = "online"
+      inst.startedAt = Date.now()
     } else {
       instances.push({
         cwd,
@@ -25,6 +27,7 @@ export default function createProcRoutes(instances: Instance[]) {
         host: BROKER_HOST,
         status: "online",
         lastSeen: Date.now(),
+        startedAt: Date.now(),
       })
     }
     res.sendStatus(200)

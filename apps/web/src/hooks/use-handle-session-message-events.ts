@@ -5,8 +5,8 @@ import type { Opencode } from "@opencode-ai/sdk"
 import { Stream } from "@opencode-ai/sdk/core/streaming"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { opencodeClient } from "@/lib/opencode-client"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
+import { useOpencodeClient } from "@/hooks/use-opencode-client"
 
 const handleMessageUpdated = (eventData: Opencode.EventListResponse) => {
   if (eventData.type !== "message.updated") return
@@ -83,13 +83,14 @@ const handleMessagePartUpdated = (eventData: Opencode.EventListResponse) => {
 export function useHandleSessionMessageEvents() {
   const queryClient = useQueryClient()
   const { data: activeSession } = useGetActiveSession()
+  const opencodeClient = useOpencodeClient()
   const streamRef = useRef<Stream<Opencode.EventListResponse> | null>(null)
 
   // Streaming: Listen to /event for message updates
   const activeSessionId = activeSession?.id
 
   useEffect(() => {
-    if (!activeSessionId) return
+    if (!activeSessionId || !opencodeClient) return // TODO: handle null client gracefully
 
     let isActive = true
 
@@ -127,5 +128,5 @@ export function useHandleSessionMessageEvents() {
         streamRef.current = null
       }
     }
-  }, [activeSessionId, queryClient])
+  }, [activeSessionId, opencodeClient, queryClient])
 }

@@ -30,7 +30,7 @@ export function SessionChat({ className }: { className?: string }) {
         {(activeSessionError as Error).message}
       </div>
     )
-  if (!activeSession) return <div className="p-6">Session not found.</div>
+  // If no active session, we still show the input box so user can start a new chat.
 
   return (
     <div
@@ -49,7 +49,9 @@ export function SessionChat({ className }: { className?: string }) {
         {isMessagesError && (
           <div className="text-red-500">{(messagesError as Error).message}</div>
         )}
-        {messages && messages.length === 0 && <div>No messages found.</div>}
+        {activeSession && messages && messages.length === 0 && (
+          <div>No messages found.</div>
+        )}
 
         <Messages />
       </div>

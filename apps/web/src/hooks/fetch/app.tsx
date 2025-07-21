@@ -1,13 +1,18 @@
 import type { Opencode } from "@opencode-ai/sdk"
 import { useQuery } from "@tanstack/react-query"
 
-import { opencodeClient } from "@/lib/opencode-client"
+import { useOpencodeClient } from "@/hooks/use-opencode-client"
+import { useUrlParams } from "@/hooks/use-url-params"
 
-export const useGetAppInfo = () =>
-  useQuery<Opencode.App & { projectName: string }>({
-    queryKey: ["appInfo"],
+export const useGetAppInfo = () => {
+  const opencodeClient = useOpencodeClient()
+  const { cwd } = useUrlParams()
+
+  return useQuery<Opencode.App & { projectName: string }>({
+    queryKey: ["appInfo", { cwd }],
+    enabled: !!opencodeClient && !!cwd,
     queryFn: () =>
-      opencodeClient.app.get().then((data) => {
+      opencodeClient!.app.get().then((data) => {
         // Cross-platform: get last segment of path.root
         const root = data.path.root
         let projectName = ""
@@ -20,3 +25,4 @@ export const useGetAppInfo = () =>
         return { ...data, projectName }
       }),
   })
+}
