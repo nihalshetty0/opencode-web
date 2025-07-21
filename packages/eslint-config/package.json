@@ -1,0 +1,23 @@
+{
+  "name": "@workspace/eslint-config",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./react": "./react.js",
+    "./cli": "./cli.js",
+    "./prettier": "./prettier.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "eslint-plugin-prettier": "^4.2.3",
+    "eslint-config-prettier": "^10.1.7",
+    "prettier": "^3.2.5",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.37.0"
+  }
+}

@@ -22,9 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-.opencode
-.todo.md
-.execute.md
-.prd.md
-openapi.json

@@ -1,0 +1,32 @@
+{
+  "name": "opencode-web-cli",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "opencode-web": "src/index.ts"
+  },
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "get-port": "^7.1.0",
+    "http-proxy-middleware": "^3.0.5",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/yargs": "^17.0.24",
+    "tsx": "^4.20.3"
+  }
+}
