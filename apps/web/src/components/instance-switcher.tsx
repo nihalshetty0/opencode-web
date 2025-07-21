@@ -1,7 +1,6 @@
 "use client"
 
-import * as React from "react"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useLastSessionStore } from "@/store/last-session"
 import { useRecentProjectsStore } from "@/store/recent-projects"
 import { ChevronsUpDown, GalleryVerticalEnd, Plus, Square } from "lucide-react"
@@ -22,7 +21,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -41,16 +39,19 @@ import {
 import { TerminalCommand } from "@/components/terminal-command"
 
 export function InstanceSwitcher() {
+  // Move ALL hooks to the top before any conditional logic
+  const [open, setOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+
   const { data: brokerData, isLoading } = useGetInstances()
   const stopInstanceMutation = useStopInstance()
   const startInstanceMutation = useStartInstance()
-  const [open, setOpen] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(false)
 
   // NEW: Use our opencode client hook
   const { cwd: currentCwd } = useUrlParams()
   const [, setSearchParams] = useSearchParams()
   const getLastSession = useLastSessionStore((s) => s.getLastSession)
+  const removeLastSession = useLastSessionStore((s) => s.removeLastSession)
   const opencodeClient = useOpencodeClient()
   // Access recent projects (stored locally)
   const { projects } = useRecentProjectsStore()
@@ -106,9 +107,21 @@ export function InstanceSwitcher() {
     return [...online, ...offline]
   }, [brokerData, projects])
 
+  // Determine selected instance by currentCwd (fallback to first) - BEFORE any returns
+  const selectedInstance = useMemo(() => {
+    return instances.find((i) => i.cwd === currentCwd) || instances[0]
+  }, [instances, currentCwd])
+
+  // Derive a human-friendly label (project folder name) - BEFORE any returns
+  const label = useMemo(() => {
+    if (!selectedInstance) return ""
+    const parts = selectedInstance.cwd.split(/[/\\]/)
+    return parts[parts.length - 1] || selectedInstance.cwd
+  }, [selectedInstance])
+
   // Helper to change URL cwd param
-  const selectInstance = (cwd: string) => {
-    const last = getLastSession(cwd)
+  const selectInstance = (cwd: string, restore: boolean = true) => {
+    const last = restore ? getLastSession(cwd) : undefined
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)
@@ -124,6 +137,7 @@ export function InstanceSwitcher() {
     )
   }
 
+  // NOW we can do conditional returns after all hooks are called
   if (isLoading) return null
 
   if (!instances.length) {
@@ -137,16 +151,6 @@ export function InstanceSwitcher() {
       </SidebarMenu>
     )
   }
-
-  // Determine selected instance by currentCwd (fallback to first)
-  const selectedInstance =
-    instances.find((i) => i.cwd === currentCwd) || instances[0]
-
-  // Derive a human-friendly label (project folder name)
-  const label = (() => {
-    const parts = selectedInstance.cwd.split(/[/\\]/)
-    return parts[parts.length - 1] || selectedInstance.cwd
-  })()
 
   return (
     <TooltipProvider>
@@ -206,7 +210,16 @@ export function InstanceSwitcher() {
                   <div className="group/instance relative w-full">
                     <SidebarMenuButton
                       size="sm"
-                      onClick={() => selectInstance(instance.cwd)}
+                      onClick={() => {
+                        if (instance.status === "online") {
+                          selectInstance(instance.cwd)
+                        } else {
+                          startInstanceMutation.mutate(instance.cwd, {
+                            onSuccess: () =>
+                              selectInstance(instance.cwd, false),
+                          })
+                        }
+                      }}
                       className={cn(
                         "w-full h-14 px-4 transition-colors",
                         isSelected && "bg-accent text-accent-foreground"
@@ -244,7 +257,12 @@ export function InstanceSwitcher() {
                               variant="secondary"
                               onClick={(e) => {
                                 e.stopPropagation()
-                                stopInstanceMutation.mutate(instance.cwd)
+                                stopInstanceMutation.mutate(instance.cwd, {
+                                  onSuccess: () => {
+                                    console.log("[stop] success", instance.cwd)
+                                    removeLastSession(instance.cwd)
+                                  },
+                                })
                               }}
                               disabled={stopInstanceMutation.isPending}
                               className="h-8 w-8 p-0 bg-background border border-border hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
@@ -257,7 +275,9 @@ export function InstanceSwitcher() {
                               variant="secondary"
                               onClick={(e) => {
                                 e.stopPropagation()
-                                startInstanceMutation.mutate(instance.cwd)
+                                startInstanceMutation.mutate(instance.cwd, {
+                                  onSuccess: () => selectInstance(instance.cwd),
+                                })
                               }}
                               disabled={startInstanceMutation.isPending}
                               className="h-8 w-8 p-0 bg-background border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary"

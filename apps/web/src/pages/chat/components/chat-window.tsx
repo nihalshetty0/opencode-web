@@ -17,14 +17,22 @@ export function ChatWindow() {
 const ChatHeader = () => {
   const { data: activeSession } = useGetActiveSession()
   const { data: appInfo } = useGetAppInfo()
+  const projectLabel = appInfo?.projectName ?? appInfo?.path.root ?? ""
+  const hasProject = !!projectLabel
+  const hasSession = !!activeSession?.title
+
+  if (!hasProject && !hasSession) return null
+
   return (
     <header className="flex h-16 shrink-0 items-center bg-background gap-2 border-b px-4 justify-center sticky top-0 z-10">
       <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">
-          {appInfo?.projectName ?? appInfo?.path.root}
-        </span>
-        <span>/</span>
-        <span>{activeSession?.title}</span>
+        {hasProject && (
+          <span className="text-muted-foreground">{projectLabel}</span>
+        )}
+        {hasProject && hasSession && (
+          <span className="text-muted-foreground">/</span>
+        )}
+        {hasSession && <span>{activeSession!.title}</span>}
       </div>
     </header>
   )

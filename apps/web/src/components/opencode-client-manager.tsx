@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react"
+import { useLastSessionStore } from "@/store/last-session"
 import { useOpencodeClientStore } from "@/store/opencode-client"
 import { useSearchParams } from "react-router-dom"
 
@@ -14,6 +15,7 @@ export function OpencodeClientManager() {
   const { cwd: cwdFromUrl } = useUrlParams()
   const { createClient, removeClient, clearAllClients } =
     useOpencodeClientStore()
+  const removeLastSession = useLastSessionStore((s) => s.removeLastSession)
   const [searchParams, setSearchParams] = useSearchParams()
 
   const instances = brokerData?.instances || []
@@ -73,9 +75,10 @@ export function OpencodeClientManager() {
     Object.keys(clients).forEach((cwd) => {
       if (!availableCwds.has(cwd)) {
         removeClient(cwd)
+        removeLastSession(cwd)
       }
     })
-  }, [instances, removeClient])
+  }, [instances, removeClient, removeLastSession])
 
   // Clear all clients when broker is offline
   useEffect(() => {

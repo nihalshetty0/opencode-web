@@ -1,4 +1,3 @@
-import prettierRecommended from "eslint-plugin-prettier/recommended"
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
 import { globalIgnores } from "eslint/config"
@@ -23,5 +22,4 @@ export default [
       globals: globals.browser,
     },
   },
-  prettierRecommended,
 ]

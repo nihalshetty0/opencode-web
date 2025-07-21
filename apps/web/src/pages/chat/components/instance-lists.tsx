@@ -1,6 +1,8 @@
 import { useMemo } from "react"
+import { useLastSessionStore } from "@/store/last-session"
 import { useRecentProjectsStore } from "@/store/recent-projects"
 import { Clock, Copy, Folder, Play } from "lucide-react"
+import { useSearchParams } from "react-router-dom"
 
 import { useGetInstances } from "@/hooks/fetch/broker"
 import { useStartInstance } from "@/hooks/fetch/instances"
@@ -18,6 +20,8 @@ interface MergedProject {
 
 export function InstanceLists() {
   const startInstanceMutation = useStartInstance()
+  const [, setSearchParams] = useSearchParams()
+  const removeLastSession = useLastSessionStore((s) => s.removeLastSession)
   const { data: brokerData } = useGetInstances()
   const { projects, getProjectName } = useRecentProjectsStore()
 
@@ -70,7 +74,7 @@ export function InstanceLists() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Folder className="h-5 w-5" />
-          <CardTitle>Available Projects</CardTitle>
+          <CardTitle>Codebases</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
@@ -115,7 +119,19 @@ export function InstanceLists() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => startInstanceMutation.mutate(project.path)}
+                  onClick={() =>
+                    startInstanceMutation.mutate(project.path, {
+                      onSuccess: () => {
+                        removeLastSession(project.path)
+                        setSearchParams((prev: URLSearchParams) => {
+                          const next = new URLSearchParams(prev)
+                          next.set("cwd", project.path)
+                          next.delete("session")
+                          return next
+                        })
+                      },
+                    })
+                  }
                   disabled={startInstanceMutation.isPending}
                 >
                   <Play className="h-4 w-4" />

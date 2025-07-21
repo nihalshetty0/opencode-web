@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, Download, Terminal } from "lucide-react"
+import { ChevronDown, ChevronRight, Terminal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,21 +20,20 @@ export function InstallGuide({ isCollapsed, onToggle }: InstallGuideProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Download className="h-5 w-5" />
-            <CardTitle>Install Opencode CLI</CardTitle>
-          </div>
-          {isCollapsed && (
-            <Button variant="ghost" size="sm" onClick={onToggle}>
-              Show install instructions
-            </Button>
-          )}
-        </div>
-      </CardHeader>
-
       <Collapsible open={!isCollapsed} onOpenChange={onToggle}>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:text-foreground select-none">
+            <div className="flex items-center gap-2">
+              {isCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+              <CardTitle>Install Opencode CLI</CardTitle>
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+
         <CollapsibleContent>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -66,30 +65,6 @@ export function InstallGuide({ isCollapsed, onToggle }: InstallGuideProps) {
                   <span>Start chatting with AI about your code</span>
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="font-medium">FAQ</h4>
-              <details className="text-sm">
-                <summary className="cursor-pointer hover:text-foreground">
-                  What is Opencode?
-                </summary>
-                <p className="mt-2 text-muted-foreground">
-                  Opencode is an AI coding agent that runs locally on your
-                  machine. It analyzes your codebase and provides intelligent
-                  responses to help you code faster.
-                </p>
-              </details>
-
-              <details className="text-sm">
-                <summary className="cursor-pointer hover:text-foreground">
-                  Is my code sent to external servers?
-                </summary>
-                <p className="mt-2 text-muted-foreground">
-                  No, all code analysis happens locally on your machine. Your
-                  code never leaves your computer.
-                </p>
-              </details>
             </div>
           </CardContent>
         </CollapsibleContent>

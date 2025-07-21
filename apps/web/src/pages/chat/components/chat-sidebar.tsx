@@ -111,6 +111,12 @@ const Session = ({ session }: { session: Opencode.Session }) => {
   const setLastSession = useLastSessionStore((s) => s.setLastSession)
   const { cwd } = useUrlParams()
 
+  // const deleteSession = useDeleteSession()
+
+  // const handleDelete = () => {
+  //   deleteSession.mutate(session.id)
+  // }
+
   return (
     <SidebarMenuItem key={session.id}>
       <SidebarMenuButton

@@ -25,6 +25,7 @@ export function ProviderSelect() {
 
   const setSelectedModel = useSelectedModelStore((s) => s.setSelectedModel)
   const selectedModel = useSelectedModelStore((s) => s.selectedModel)
+  const recentModels = useSelectedModelStore((s) => s.recent)
 
   // TODO: Refactor
   useEffect(() => {
@@ -67,37 +68,73 @@ export function ProviderSelect() {
       </PopoverTrigger>
       <PopoverContent className=" p-0" align="start">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search model..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
-            <CommandGroup>
-              {modelList.map((model) => (
-                <CommandItem
-                  key={model.modelID}
-                  value={model.modelID}
-                  onSelect={(currentValue) => {
-                    setSelectedModel({
-                      providerID:
-                        modelList.find(
-                          (model) => model.modelID === currentValue
-                        )?.providerID ?? "",
-                      modelID: currentValue,
-                    })
-                    setPopoverOpen(false)
-                  }}
-                >
-                  <CheckIcon
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedModel?.modelID === model.modelID
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {model.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {/* TODO: add a guide on how to add a model */}
+            <CommandEmpty>No model found.</CommandEmpty>
+            {recentModels.length > 0 && (
+              <CommandGroup heading="Recent">
+                {recentModels.map((model) => {
+                  const displayName =
+                    modelList.find((m) => m.modelID === model.modelID)?.name ||
+                    model.modelID
+                  return (
+                    <CommandItem
+                      key={`recent-${model.providerID}:${model.modelID}:recent`}
+                      value={`recent:${model.providerID}:${model.modelID}`}
+                      onSelect={() => {
+                        setSelectedModel(model)
+                        setPopoverOpen(false)
+                      }}
+                    >
+                      <CheckIcon
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedModel?.modelID === model.modelID
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {displayName}
+                    </CommandItem>
+                  )
+                })}
+              </CommandGroup>
+            )}
+
+            {providers?.providers?.map((provider) => (
+              <CommandGroup key={provider.id} heading={provider.id}>
+                {Object.keys(provider.models).map((modelId) => {
+                  const info = provider.models[modelId]
+                  return (
+                    <CommandItem
+                      key={`${provider.id}:${modelId}`}
+                      value={`${provider.id}:${modelId}`}
+                      onSelect={(currentValue) => {
+                        const parts = currentValue.split(":")
+                        const modelId = parts.pop() ?? currentValue
+                        const providerId = parts.pop() ?? provider.id
+                        setSelectedModel({
+                          providerID: providerId,
+                          modelID: modelId,
+                        })
+                        setPopoverOpen(false)
+                      }}
+                    >
+                      <CheckIcon
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          selectedModel?.modelID === modelId
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {info.name}
+                    </CommandItem>
+                  )
+                })}
+              </CommandGroup>
+            ))}
           </CommandList>
         </Command>
       </PopoverContent>
