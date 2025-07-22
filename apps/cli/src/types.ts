@@ -1,8 +1,7 @@
-export interface Instance {
+export interface InstanceRecord {
   cwd: string
   port: number
-  host: string
-  status: "online" | "offline"
-  lastSeen?: number
-  startedAt: number
+  pid: number
+  url: string
+  startedAt: string
 }

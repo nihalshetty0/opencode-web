@@ -1,3 +1,2 @@
 #!/usr/bin/env node
-export const BROKER_PORT_RANGE = [13943, 14839, 18503, 19304, 20197] as const
-export const BROKER_HOST = "127.0.0.1"
+export const WEB_APP_BASE_URL = "opencode-web.vercel.app"

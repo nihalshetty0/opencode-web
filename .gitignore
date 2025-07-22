@@ -28,3 +28,6 @@ dist-ssr
 .execute.md
 .prd.md
 openapi.json
+
+.env
+
