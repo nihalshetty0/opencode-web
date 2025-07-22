@@ -52,15 +52,8 @@ export function InstanceSwitcher() {
   const [, setSearchParams] = useSearchParams()
   const getLastSession = useLastSessionStore((s) => s.getLastSession)
   const removeLastSession = useLastSessionStore((s) => s.removeLastSession)
-  const opencodeClient = useOpencodeClient()
   // Access recent projects (stored locally)
   const { projects } = useRecentProjectsStore()
-
-  // Debug logging
-  console.log("🔍 InstanceSwitcher debug:", {
-    currentCwd,
-    hasClient: !!opencodeClient,
-  })
 
   const instances = useMemo(() => {
     // Combine broker-reported instances with locally stored recent projects.

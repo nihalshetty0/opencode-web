@@ -43,7 +43,7 @@ export function ChatSidebar({
     <Sidebar {...props}>
       <SidebarHeader className="px-3 py-4 space-y-3">
         <InstanceSwitcher />
-        <div className="flex items-center gap-2 px-2 justify-between">
+        <div className="flex items-center gap-2 px-1 justify-between">
           <div className="flex items-center gap-1">
             <SidebarTrigger className="-ml-1" />
             <p>Chats</p>
@@ -64,7 +64,7 @@ export function ChatSidebar({
       </SidebarHeader>
       <SidebarContent className="">
         <SidebarGroup className="pt-1 px-3">
-          <SidebarGroupContent className="px-2">
+          <SidebarGroupContent className="px-1">
             <SidebarMenu className="gap-2">
               <SessionList />
             </SidebarMenu>

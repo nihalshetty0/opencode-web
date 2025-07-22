@@ -61,6 +61,7 @@ export function OpencodeClientManager() {
     } else {
       // No online instances, remove the param
       newParams.delete("cwd")
+      newParams.delete("sessionId")
     }
 
     setSearchParams(newParams, { replace: true })
