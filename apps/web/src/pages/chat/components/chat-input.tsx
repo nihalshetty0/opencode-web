@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { ProviderSelect } from "@/pages/chat/components/provider-select"
 import { useSelectedModelStore } from "@/store"
-import { useLastSessionStore } from "@/store/last-session"
 import type { MessageWithParts } from "@/types"
 import type { Opencode } from "@opencode-ai/sdk"
 import { useQueryClient } from "@tanstack/react-query"
@@ -18,8 +17,7 @@ export function ChatInput() {
   const { data: activeSession } = useGetActiveSession()
   const createSessionMutation = useCreateSession()
   const [, setSearchParams] = useSearchParams()
-  const { cwd } = useUrlParams()
-  const setLastSession = useLastSessionStore((s) => s.setLastSession)
+  const { port } = useUrlParams()
 
   const { data: messages } = useGetMessages({ sessionId: activeSession?.id })
 
@@ -88,7 +86,9 @@ export function ChatInput() {
         {
           onSuccess: () => {
             if (isFirstMessage) {
-              queryClient.invalidateQueries({ queryKey: ["sessions", { cwd }] })
+              queryClient.invalidateQueries({
+                queryKey: ["sessions", { port }],
+              })
             }
           },
           onError: () => {
@@ -119,7 +119,6 @@ export function ChatInput() {
             next.set("session", newSession.id)
             return next
           })
-          if (cwd) setLastSession(cwd, newSession.id)
           // Proceed to send draft message
           setInput(draft) // restore draft into state for doSend
           doSend(newSession.id)

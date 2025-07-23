@@ -1,11 +1,9 @@
 import * as React from "react"
-import { useLastSessionStore } from "@/store/last-session"
 import type { Opencode } from "@opencode-ai/sdk"
 import { Plus } from "lucide-react"
 import { useSearchParams } from "react-router-dom"
 
 import { useGetSessions } from "@/hooks/fetch/sessions"
-import { useUrlParams } from "@/hooks/use-url-params"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -75,7 +73,6 @@ export function ChatSidebar({
     </Sidebar>
   )
 }
-
 const SessionList = () => {
   const { data: sessions, isLoading, isError, error } = useGetSessions()
 
@@ -108,8 +105,6 @@ const SessionList = () => {
 
 const Session = ({ session }: { session: Opencode.Session }) => {
   const [, setSearchParams] = useSearchParams()
-  const setLastSession = useLastSessionStore((s) => s.setLastSession)
-  const { cwd } = useUrlParams()
 
   // const deleteSession = useDeleteSession()
 
@@ -122,7 +117,6 @@ const Session = ({ session }: { session: Opencode.Session }) => {
       <SidebarMenuButton
         className="h-auto text-card-foreground flex flex-col gap-4 border py-3 shadow-sm items-start px-4"
         onClick={() => {
-          if (cwd) setLastSession(cwd, session.id)
           setSearchParams((prev: URLSearchParams) => {
             const next = new URLSearchParams(prev)
             next.set("session", session.id)

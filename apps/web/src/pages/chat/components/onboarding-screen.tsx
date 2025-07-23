@@ -2,7 +2,6 @@ import { useState } from "react"
 import { useUserStateStore } from "@/store/user-state"
 
 import { InstallGuide } from "./install-guide"
-import { InstanceLists } from "./instance-lists"
 import { StartInstanceGuide } from "./start-instance-guide"
 
 export function OnboardingScreen() {
@@ -19,17 +18,12 @@ export function OnboardingScreen() {
           </p>
         </div>
 
-        {/* Install Guide - collapsed for returning users */}
         <InstallGuide
           isCollapsed={isInstallCollapsed}
           onToggle={() => setIsInstallCollapsed(!isInstallCollapsed)}
         />
 
-        {/* Start Instance Guide - always visible */}
         <StartInstanceGuide />
-
-        {/* Instance Lists - only if there are instances to show */}
-        <InstanceLists />
       </div>
     </div>
   )

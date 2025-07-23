@@ -1,9 +1,7 @@
 import { useMemo } from "react"
 import { parsePatch } from "diff"
 
-import { ContentCode } from "@/components/content-code"
-
-// import styles from "@/styles/content-diff.module.css"
+import { ContentCode } from "./content-code"
 
 type DiffRow = {
   left: string
@@ -109,7 +107,7 @@ export function ContentDiff(props: Props) {
     }
 
     return diffRows
-  }, [])
+  }, [props.diff])
 
   const mobileRows = useMemo(() => {
     const mobileBlocks: {
@@ -162,25 +160,34 @@ export function ContentDiff(props: Props) {
   }, [rows])
 
   return (
-    <div
-    // className={styles.root}
-    >
-      <div data-component="desktop">
-        {rows.map((r) => (
-          <div data-component="diff-row" data-type={r.type}>
+    <div className="flex flex-col border border-border bg-card rounded">
+      {/* Desktop view */}
+      <div className="hidden @md/chat:block">
+        {rows.map((r, index) => (
+          <div key={index} className="grid grid-cols-2 items-stretch">
             <div
-              data-slot="before"
-              data-diff-type={
-                r.type === "removed" || r.type === "modified" ? "removed" : ""
-              }
+              className={`relative flex flex-col overflow-x-visible min-w-0 items-stretch px-4 py-0 pl-9 border-r border-border ${
+                r.type === "removed" || r.type === "modified"
+                  ? "bg-destructive/10"
+                  : ""
+              } ${index === 0 ? "pt-1" : ""} ${index === rows.length - 1 ? "pb-1" : ""} before:absolute before:left-2 before:top-px before:select-none ${
+                r.type === "removed" || r.type === "modified"
+                  ? "before:content-['-'] before:text-destructive"
+                  : ""
+              }`}
             >
               <ContentCode code={r.left} flush lang={props.lang} />
             </div>
             <div
-              data-slot="after"
-              data-diff-type={
-                r.type === "added" || r.type === "modified" ? "added" : ""
-              }
+              className={`relative flex flex-col overflow-x-visible min-w-0 items-stretch px-4 py-0 pl-9 ${
+                r.type === "added" || r.type === "modified"
+                  ? "bg-green-500/10"
+                  : ""
+              } ${index === 0 ? "pt-1" : ""} ${index === rows.length - 1 ? "pb-1" : ""} before:absolute before:left-2 before:top-px before:select-none ${
+                r.type === "added" || r.type === "modified"
+                  ? "before:content-['+'] before:text-green-600"
+                  : ""
+              }`}
             >
               <ContentCode code={r.right} lang={props.lang} flush />
             </div>
@@ -188,18 +195,27 @@ export function ContentDiff(props: Props) {
         ))}
       </div>
 
-      <div data-component="mobile">
-        {mobileRows.map((block) => (
-          <div data-component="diff-block" data-type={block.type}>
-            {block.lines.map((line) => (
+      {/* Mobile view */}
+      <div className="block @md/chat:hidden">
+        {mobileRows.map((block, blockIndex) => (
+          <div key={blockIndex} className="flex flex-col">
+            {block.lines.map((line, lineIndex) => (
               <div
-                data-diff-type={
+                key={lineIndex}
+                className={`relative px-4 py-0 pl-9 ${
+                  blockIndex === 0 && lineIndex === 0 ? "pt-1" : ""
+                } ${
+                  blockIndex === mobileRows.length - 1 &&
+                  lineIndex === block.lines.length - 1
+                    ? "pb-1"
+                    : ""
+                } before:absolute before:left-2 before:top-px before:select-none ${
                   block.type === "removed"
-                    ? "removed"
+                    ? "bg-destructive/10 before:content-['-'] before:text-destructive"
                     : block.type === "added"
-                      ? "added"
+                      ? "bg-green-500/10 before:content-['+'] before:text-green-600"
                       : ""
-                }
+                }`}
               >
                 <ContentCode code={line} lang={props.lang} flush />
               </div>

@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react"
 import { queryClient } from "@/app"
+import { useOpencodeClient } from "@/store/opencode-client"
 import type { MessageWithParts } from "@/types"
 import type { Opencode } from "@opencode-ai/sdk"
 import { Stream } from "@opencode-ai/sdk/core/streaming"
 import { useQueryClient } from "@tanstack/react-query"
 
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
-import { useOpencodeClient } from "@/hooks/use-opencode-client"
 
 const handleMessageUpdated = (eventData: Opencode.EventListResponse) => {
   if (eventData.type !== "message.updated") return

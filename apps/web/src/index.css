@@ -185,4 +185,11 @@
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
+  
+  /* Shiki dark mode support */
+  html.dark .shiki,
+  html.dark .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
 }

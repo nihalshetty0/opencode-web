@@ -1,16 +1,16 @@
+import { useOpencodeClient } from "@/store/opencode-client"
 import type { Opencode } from "@opencode-ai/sdk"
 import { useQuery } from "@tanstack/react-query"
 
-import { useOpencodeClient } from "@/hooks/use-opencode-client"
 import { useUrlParams } from "@/hooks/use-url-params"
 
 export const useGetAppInfo = () => {
+  const { port } = useUrlParams()
   const opencodeClient = useOpencodeClient()
-  const { cwd } = useUrlParams()
 
   return useQuery<Opencode.App & { projectName: string }>({
-    queryKey: ["appInfo", { cwd }],
-    enabled: !!opencodeClient && !!cwd,
+    queryKey: ["appInfo", { port }],
+    enabled: !!port && !!opencodeClient,
     queryFn: () =>
       opencodeClient!.app.get().then((data) => {
         // Cross-platform: get last segment of path.root

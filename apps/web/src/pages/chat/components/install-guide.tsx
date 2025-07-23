@@ -1,6 +1,5 @@
 import { ChevronDown, ChevronRight, Terminal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Collapsible,
@@ -8,6 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { CopyButton } from "@/components/copy-button"
+import { TerminalCommand } from "@/components/terminal-command"
 
 interface InstallGuideProps {
   isCollapsed: boolean
