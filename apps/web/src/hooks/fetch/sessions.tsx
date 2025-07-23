@@ -13,14 +13,9 @@ export const useGetSessions = () => {
     queryKey: ["sessions", { port }],
     enabled: !!port && !!opencodeClient,
     queryFn: () => {
-      console.log("[useGetSessions] Fetching sessions for port:", port)
-
       return opencodeClient!.session.list().then((data) => {
-        console.log("[useGetSessions] Got sessions:", data.length)
-
         // Sort by creation time (newest first)
         data.sort((a, b) => (b.time?.created ?? 0) - (a.time?.created ?? 0))
-
         return data
       })
     },
@@ -39,9 +34,6 @@ export const useGetActiveSession = () => {
     const session = states.data.find(
       (s: Opencode.Session) => s.id === sessionId
     )
-    if (session) {
-      console.log("[useGetActiveSession] Active session found:", session.id)
-    }
 
     return session
   }, [states.data, sessionId])
@@ -56,11 +48,9 @@ export const useCreateSession = () => {
 
   return useMutation<Opencode.Session>({
     mutationFn: () => {
-      console.log("[useCreateSession] Creating new session...")
       return opencodeClient!.session.create()
     },
-    onSuccess: (session) => {
-      console.log("[useCreateSession] Session created:", session.id)
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions", { port }] })
     },
   })

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { ProviderSelect } from "@/pages/chat/components/provider-select"
 import { useSelectedModelStore } from "@/store"
+import { useBusySessionStore } from "@/store/use-busy-session-store"
 import type { MessageWithParts } from "@/types"
 import type { Opencode } from "@opencode-ai/sdk"
 import { useQueryClient } from "@tanstack/react-query"
@@ -127,6 +128,11 @@ export function ChatInput() {
     }
   }
 
+  const busySessions = useBusySessionStore((s) => s.busySessions)
+  const isSessionBusy = activeSession?.id
+    ? busySessions[activeSession.id]
+    : false
+
   return (
     <form
       className="w-full divide-y overflow-hidden border border-b-0 sticky bottom-0 z-10 bg-background"
@@ -144,9 +150,14 @@ export function ChatInput() {
           disabled={
             sendMessageMutation.isPending ||
             createSessionMutation.isPending ||
-            !input.trim()
+            !input.trim() ||
+            isSessionBusy
           }
-          status={sendMessageMutation.isPending ? "submitted" : "ready"}
+          status={
+            sendMessageMutation.isPending || isSessionBusy
+              ? "submitted"
+              : "ready"
+          }
         />
       </div>
     </form>

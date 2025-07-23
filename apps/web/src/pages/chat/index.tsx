@@ -6,6 +6,7 @@ import {
   useOpencodeClient,
   useOpencodeClientStore,
 } from "@/store/opencode-client"
+import { useBusySessionStore } from "@/store/use-busy-session-store"
 import { useUserStateStore } from "@/store/user-state"
 
 import { useUrlParams } from "@/hooks/use-url-params"
@@ -21,7 +22,6 @@ export function ChatLayout() {
   useEffect(() => {
     if (port) {
       setPort(port)
-      console.log("[ChatLayout] Updated client for port:", port)
     }
   }, [port, setPort])
 
@@ -31,6 +31,14 @@ export function ChatLayout() {
       markAsReturningUser()
     }
   }, [port, isFirstTimeUser, markAsReturningUser])
+
+  const { init: initBusySessionStore, cleanup: cleanupBusySessionState } =
+    useBusySessionStore()
+
+  useEffect(() => {
+    initBusySessionStore()
+    return () => cleanupBusySessionState()
+  }, [initBusySessionStore, cleanupBusySessionState, port])
 
   // Show chat UI if we have a port
   if (port) {

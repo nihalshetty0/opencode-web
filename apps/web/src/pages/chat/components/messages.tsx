@@ -1,5 +1,4 @@
-// Import OpenAPI types for Message and Part
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import type {
   AssistantMessageWithParts,
   MessageWithParts,
@@ -7,10 +6,9 @@ import type {
 } from "@/types"
 import type { Opencode } from "@opencode-ai/sdk"
 import map from "lang-map"
-import { codeToHtml } from "shiki"
 
 import { StickToBottom, StickToBottomContent } from "@/lib/use-stick-to-bottom"
-import { cn } from "@/lib/utils"
+import { cn, isAssistantMessage, isCompletedToolPart } from "@/lib/utils"
 import { useGetMessages } from "@/hooks/fetch/messages"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
 
@@ -105,18 +103,6 @@ function TextPart({
       <div className="text-sm whitespace-pre-line">{part.text}</div>
     </Card>
   )
-}
-
-function isCompletedToolPart(
-  part: Opencode.Part
-): part is ToolPartWithCompletedTool {
-  return part.type === "tool" && part.state?.status === "completed"
-}
-
-function isAssistantMessage(
-  message: MessageWithParts
-): message is AssistantMessageWithParts {
-  return message.info.role === "assistant"
 }
 
 function ToolPart({

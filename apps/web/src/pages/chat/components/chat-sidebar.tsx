@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useBusySessionStore } from "@/store/use-busy-session-store"
 import type { Opencode } from "@opencode-ai/sdk"
 import { Plus } from "lucide-react"
 import { useSearchParams } from "react-router-dom"
@@ -73,6 +74,7 @@ export function ChatSidebar({
     </Sidebar>
   )
 }
+
 const SessionList = () => {
   const { data: sessions, isLoading, isError, error } = useGetSessions()
 
@@ -105,12 +107,9 @@ const SessionList = () => {
 
 const Session = ({ session }: { session: Opencode.Session }) => {
   const [, setSearchParams] = useSearchParams()
+  const busySessions = useBusySessionStore((s) => s.busySessions)
 
-  // const deleteSession = useDeleteSession()
-
-  // const handleDelete = () => {
-  //   deleteSession.mutate(session.id)
-  // }
+  const isBusy = busySessions[session.id]
 
   return (
     <SidebarMenuItem key={session.id}>
@@ -126,6 +125,7 @@ const Session = ({ session }: { session: Opencode.Session }) => {
       >
         <span className="font-semibold">{session.title || session.id}</span>
         <span className="text-xs text-gray-500">ID: {session.id}</span>
+        {isBusy && <span className="text-xs text-gray-500">Busy</span>}
         {/* TODO: need better UX to delete sessions */}
         {/* <button
           type="button"

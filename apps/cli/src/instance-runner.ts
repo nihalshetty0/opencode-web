@@ -150,7 +150,6 @@ const projectDir = path.resolve(process.argv[2] ?? process.cwd())
 
     // Handle cleanup on process termination
     const cleanup = () => {
-      console.log("Cleaning up instance...")
       removeInstanceByCwd(projectDir)
       opencodeProc.kill()
       server.close()
