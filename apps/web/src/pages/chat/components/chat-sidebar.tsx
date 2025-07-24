@@ -1,4 +1,5 @@
 import * as React from "react"
+import { queryClient } from "@/app"
 import { useBusySessionStore } from "@/store/use-busy-session-store"
 import type { Opencode } from "@opencode-ai/sdk"
 import { Plus } from "lucide-react"
@@ -25,42 +26,9 @@ import { InstanceSwitcher } from "@/components/instance-switcher"
 export function ChatSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { isLoading } = useGetSessions()
-
-  const [, setSearchParams] = useSearchParams()
-
-  const handleNewChat = () => {
-    // Clear session param to start a fresh draft; first message will create session
-    setSearchParams((prev: URLSearchParams) => {
-      const next = new URLSearchParams(prev)
-      next.delete("session")
-      return next
-    })
-  }
-
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="px-3 py-4 space-y-3">
-        <InstanceSwitcher />
-        <div className="flex items-center gap-2 px-1 justify-between">
-          <div className="flex items-center gap-1">
-            <SidebarTrigger className="-ml-1" />
-            <p>Chats</p>
-          </div>
-
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleNewChat}
-            disabled={isLoading}
-          >
-            <Plus />
-            New Chat
-          </Button>
-        </div>
-        {/* TODO: search for sessions */}
-        {/* <SearchForm /> */}
-      </SidebarHeader>
+      <SessionListHeader />
       <SidebarContent className="">
         <SidebarGroup className="pt-1 px-3">
           <SidebarGroupContent className="px-1">
@@ -72,6 +40,45 @@ export function ChatSidebar({
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
+  )
+}
+
+const SessionListHeader = () => {
+  const { isLoading } = useGetSessions()
+
+  const [, setSearchParams] = useSearchParams()
+
+  const handleNewChat = React.useCallback(() => {
+    // Clear session param to start a fresh draft; first message will create session
+    setSearchParams((prev: URLSearchParams) => {
+      const next = new URLSearchParams(prev)
+      next.delete("session")
+      return next
+    })
+  }, [setSearchParams])
+
+  return (
+    <SidebarHeader className="px-3 py-4 space-y-3">
+      {/* <InstanceSwitcher /> */}
+      <div className="flex items-center gap-2 px-1 justify-between">
+        <div className="flex items-center gap-1">
+          <SidebarTrigger className="-ml-1" />
+          <p>Chats</p>
+        </div>
+
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleNewChat}
+          disabled={isLoading}
+        >
+          <Plus />
+          New Chat
+        </Button>
+      </div>
+      {/* TODO: search for sessions */}
+      {/* <SearchForm /> */}
+    </SidebarHeader>
   )
 }
 
@@ -107,9 +114,7 @@ const SessionList = () => {
 
 const Session = ({ session }: { session: Opencode.Session }) => {
   const [, setSearchParams] = useSearchParams()
-  const busySessions = useBusySessionStore((s) => s.busySessions)
-
-  const isBusy = busySessions[session.id]
+  const isBusy = useBusySessionStore((s) => s.busySessions[session.id])
 
   return (
     <SidebarMenuItem key={session.id}>
@@ -126,6 +131,7 @@ const Session = ({ session }: { session: Opencode.Session }) => {
         <span className="font-semibold">{session.title || session.id}</span>
         <span className="text-xs text-gray-500">ID: {session.id}</span>
         {isBusy && <span className="text-xs text-gray-500">Busy</span>}
+
         {/* TODO: need better UX to delete sessions */}
         {/* <button
           type="button"

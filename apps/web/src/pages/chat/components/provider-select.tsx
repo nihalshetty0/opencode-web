@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { memo, useEffect, useMemo, useState } from "react"
 import { useSelectedModelStore } from "@/store"
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
 
@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function ProviderSelect() {
+const ProviderSelectComponent = () => {
   const { data: providers } = useGetProviders()
 
   const setSelectedModel = useSelectedModelStore((s) => s.setSelectedModel)
@@ -141,3 +141,5 @@ export function ProviderSelect() {
     </Popover>
   )
 }
+
+export const ProviderSelect = memo(ProviderSelectComponent)

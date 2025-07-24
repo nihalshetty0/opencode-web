@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { memo, useMemo } from "react"
 import type {
   AssistantMessageWithParts,
   MessageWithParts,
@@ -7,12 +7,13 @@ import type {
 import type { Opencode } from "@opencode-ai/sdk"
 import map from "lang-map"
 
-import { StickToBottom, StickToBottomContent } from "@/lib/use-stick-to-bottom"
 import { cn, isAssistantMessage, isCompletedToolPart } from "@/lib/utils"
 import { useGetMessages } from "@/hooks/fetch/messages"
 import { useGetActiveSession } from "@/hooks/fetch/sessions"
 
 import { Card } from "@/components/ui/card"
+import { Markdown } from "@/components/ui/markdown"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ContentBash } from "@/components/content-bash"
 import { ContentCode } from "@/components/content-code"
 import { ContentDiff } from "@/components/content-diff"
@@ -28,26 +29,53 @@ interface Todo {
   priority: "low" | "medium" | "high"
 }
 
-export function Messages() {
+function MessagesComponent() {
   const { data: activeSession } = useGetActiveSession()
-  const { data: messages } = useGetMessages({ sessionId: activeSession?.id })
+  const {
+    data: messages,
+    isLoading: isMessagesLoading,
+    isError: isMessagesError,
+    error: messagesError,
+  } = useGetMessages({ sessionId: activeSession?.id })
 
   return (
-    <StickToBottom scrollMode="document">
-      <StickToBottomContent>
-        {messages && messages.length > 0 && (
-          <div className="space-y-2">
-            {messages.map((message: MessageWithParts) => (
-              <Message key={message.info.id} message={message} />
-            ))}
-          </div>
-        )}
-      </StickToBottomContent>
-    </StickToBottom>
+    // <StickToBottom scrollMode="document">
+    //   <StickToBottomContent>
+    <>
+      {isMessagesLoading && (
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      )}
+      {isMessagesError && (
+        <div className="text-red-500">{(messagesError as Error).message}</div>
+      )}
+      {activeSession && messages && messages.length === 0 && (
+        <div>No messages found.</div>
+      )}
+
+      {messages && messages.length > 0 && (
+        <div className="space-y-2">
+          {messages.map((message: MessageWithParts) => (
+            <Message key={message.info.id} message={message} />
+          ))}
+        </div>
+      )}
+
+      {/* </StickToBottomContent>
+    </StickToBottom> */}
+    </>
   )
 }
 
-function Message({ message }: { message: MessageWithParts }) {
+export const Messages = memo(MessagesComponent)
+
+function MessageComponent({ message }: { message: MessageWithParts }) {
+  if (message.info.id === "msg_83a799247001VCi3MbOtCASnsE") {
+    console.log("message", message)
+  }
+
   // if just info, return null
   if (!message.parts || message.parts.length === 0) {
     return null
@@ -62,7 +90,9 @@ function Message({ message }: { message: MessageWithParts }) {
   )
 }
 
-function Part({
+const Message = memo(MessageComponent)
+
+function PartComponent({
   part,
   message,
 }: {
@@ -79,7 +109,9 @@ function Part({
   }
 }
 
-function TextPart({
+const Part = memo(PartComponent)
+
+function TextPartComponent({
   part,
   message,
 }: {
@@ -94,18 +126,20 @@ function TextPart({
     <Card
       key={part.id}
       className={cn(
-        "p-3 border-0",
+        "p-3 border-0 prose dark:prose-invert max-w-none",
         message.info.role === "user"
           ? "border-l-4 border-l-blue-500"
           : "border-r-4 border-r-purple-500"
       )}
     >
-      <div className="text-sm whitespace-pre-line">{part.text}</div>
+      <Markdown className="">{part.text}</Markdown>
     </Card>
   )
 }
 
-function ToolPart({
+const TextPart = memo(TextPartComponent)
+
+function ToolPartComponent({
   part,
   message,
 }: {
@@ -134,7 +168,9 @@ function ToolPart({
   return null
 }
 
-const CompletedToolPart = ({
+const ToolPart = memo(ToolPartComponent)
+
+const CompletedToolPartComponent = ({
   part,
   message,
 }: {
@@ -168,6 +204,8 @@ const CompletedToolPart = ({
       return <FallbackToolComponent part={part} />
   }
 }
+
+const CompletedToolPart = memo(CompletedToolPartComponent)
 
 const FallbackToolComponent = ({
   part,

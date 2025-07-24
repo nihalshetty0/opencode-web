@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useSearchParams } from "react-router-dom"
 
 import { generateNewID, ID } from "@/lib/generateId"
-import { useGetMessages, useSendMessage } from "@/hooks/fetch/messages"
+import { useSendMessage } from "@/hooks/fetch/messages"
 import { useCreateSession, useGetActiveSession } from "@/hooks/fetch/sessions"
 import { useUrlParams } from "@/hooks/use-url-params"
 
@@ -19,8 +19,6 @@ export function ChatInput() {
   const createSessionMutation = useCreateSession()
   const [, setSearchParams] = useSearchParams()
   const { port } = useUrlParams()
-
-  const { data: messages } = useGetMessages({ sessionId: activeSession?.id })
 
   const [input, setInput] = useState("")
 
@@ -69,6 +67,13 @@ export function ChatInput() {
         parts: [newMessagePart],
       }
 
+      const messages = queryClient.getQueryData([
+        "messages",
+        sessionId,
+      ]) as MessageWithParts[]
+
+      const isFirstMessage = !messages || messages.length === 0
+
       queryClient.setQueryData(
         ["messages", sessionId],
         (old: MessageWithParts[] = []) => [
@@ -76,8 +81,6 @@ export function ChatInput() {
           optimisticNewMessageWithParts,
         ]
       )
-
-      const isFirstMessage = !messages || messages.length === 0
 
       sendMessageMutation.mutate(
         {
@@ -128,10 +131,9 @@ export function ChatInput() {
     }
   }
 
-  const busySessions = useBusySessionStore((s) => s.busySessions)
-  const isSessionBusy = activeSession?.id
-    ? busySessions[activeSession.id]
-    : false
+  const isSessionBusy = useBusySessionStore((state) =>
+    activeSession?.id ? (state.busySessions[activeSession.id] ?? false) : false
+  )
 
   return (
     <form

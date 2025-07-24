@@ -1,6 +1,6 @@
 // Ref: https://www.kibo-ui.com/components/ai-input
 import type { ComponentProps, KeyboardEventHandler } from "react"
-import { useCallback, useEffect, useRef } from "react"
+import { memo, useCallback, useEffect, useRef } from "react"
 import { Loader2Icon, SendIcon, SquareIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -68,7 +68,7 @@ export type ChatInputTextareaProps = ComponentProps<typeof Textarea> & {
   maxHeight?: number
 }
 
-export const ChatInputTextarea = ({
+const ChatInputTextareaComponent = ({
   onChange,
   className,
   placeholder = "What would you like to do?",
@@ -112,11 +112,13 @@ export const ChatInputTextarea = ({
   )
 }
 
+export const ChatInputTextarea = memo(ChatInputTextareaComponent)
+
 export type ChatInputSubmitProps = ComponentProps<typeof Button> & {
   status?: "submitted" | "streaming" | "ready" | "error"
 }
 
-export const ChatInputSubmit = ({
+const ChatInputSubmitComponent = ({
   className,
   variant = "default",
   size = "icon",
@@ -146,3 +148,5 @@ export const ChatInputSubmit = ({
     </Button>
   )
 }
+
+export const ChatInputSubmit = memo(ChatInputSubmitComponent)
